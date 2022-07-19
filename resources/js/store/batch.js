@@ -1,4 +1,4 @@
-const { makeQueryString } = require('./common')
+const { makeQueryString, modelUpdate } = require('./common')
 const baseUrl = '/api/batches'
 export default {
     actions: {
@@ -20,8 +20,9 @@ export default {
                 return response.data.result
             }
         },
-        async get({}, id) {
-            const response = await axios.get(`${baseUrl}/${id}`)
+        async get({}, data={id: '', queryObject: {}}) {
+            const queryString = makeQueryString(data.queryObject)
+            const response = await axios.get(`${baseUrl}/${data.id}?${queryString}`)
             if(response.data.status == 200) {
                 return response.data.batch
             } else {
@@ -38,9 +39,7 @@ export default {
                 }
             })
         },
-        update() {
-
-        },
+        update: ({}, payload) => modelUpdate({}, payload, baseUrl, 'batch'),
         delete() {
 
         }

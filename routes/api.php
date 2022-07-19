@@ -48,6 +48,7 @@ Route::group(
     'prefix' => '/batches'
 
 ], function() {
+    Route::patch('/{batch}/update', [BatchController::class, 'update']);
     Route::post('/store', [BatchController::class, 'store']);
     Route::get('/search', [BatchController::class, 'search']);
     Route::get('/{batch}', [BatchController::class, 'show']);
@@ -61,6 +62,7 @@ Route::group(
     'prefix' => '/students'
 
 ], function() {
+    Route::patch('/{student}/update', [StudentController::class, 'update']);
     Route::post('/store', [StudentController::class, 'store']);
     Route::get('/search', [StudentController::class, 'search']);
     Route::get('/{batch}', [StudentController::class, 'show']);

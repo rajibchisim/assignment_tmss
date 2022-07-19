@@ -131,9 +131,19 @@ class BatchController extends Controller
      * @param  \App\Models\Batch  $batch
      * @return \Illuminate\Http\Response
      */
-    public function show(Batch $batch)
+    public function show(Batch $batch, Request $request)
     {
-        //
+        $batch->load('department')->loadCount('students');
+
+        if($request->students) {
+            $students = $batch->students()->latest()->simplePaginate(10);
+            $batch->students = $students->toArray();
+        }
+
+        return response()->json([
+            'status' => 200,
+            'batch' => $batch,
+        ]);
     }
 
     /**
@@ -156,7 +166,36 @@ class BatchController extends Controller
      */
     public function update(Request $request, Batch $batch)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'department_id' => 'required|numeric|exists:departments,id',
+            'name' => 'required|string'
+        ]);
+
+        if($validator->fails()) {
+            return response()->json([
+                'status' => 422,
+                'errors' => $validator->errors()
+            ]);
+        }
+
+        $validated = $validator->validated();
+
+        if($batch->department_id != $validated['department_id']) {
+            return response()->json(
+                [
+                    'status' => 422,
+                    'errors' => 'Data constraint failed.'
+                ]
+            );
+        }
+
+        $batch->name = $validated['name'];
+        $batch->save();
+
+        return response()->json([
+            'status' => 200,
+            'batch' => $batch
+        ]);
     }
 
     /**

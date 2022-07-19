@@ -3,16 +3,23 @@
     class="relative flex flex-col w-full min-w-0 mt-8 mb-6 break-words bg-white rounded-lg shadow-xl"
   >
     <div class="px-6">
-      <div class="mt-8 text-center">
+      <div class="relative mt-8 text-center">
         <h3
           class="text-xl font-semibold leading-normal text-blueGray-700"
         >
-          Department of: <span class="capitalize">{{ department ? department.name : ''  }}</span>
+          Department of: <span class="capitalize">{{ departmentName  }}</span>
         </h3>
+        <h2 class="text-lg">Batch: {{ batchName }}</h2>
         <div class="mb-2 text-blueGray-600">
           <i class="mr-2 text-lg fas fa-university text-blueGray-400"></i>
           University of Computer Science
         </div>
+
+        <button @click="openBatchAddEditModal" class="absolute p-2 top-4 right-4 hover:text-gray-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+            </svg>
+        </button>
       </div>
       <div class="w-full px-4 text-center">
           <div class="flex justify-center py-4 pt-6 lg:pt-4">
@@ -24,14 +31,6 @@
               </span>
               <span class="text-sm text-blueGray-400">Students</span>
             </div>
-            <div class="p-3 mr-4 text-center">
-              <span
-                class="block text-xl font-bold tracking-wide uppercase text-blueGray-600"
-              >
-                {{ total_batch }}
-              </span>
-              <span class="text-sm text-blueGray-400">Batches</span>
-            </div>
           </div>
     </div>
 
@@ -41,15 +40,13 @@
         <div class="flex flex-wrap justify-center">
             <div class="w-full px-4 lg:w-3/12">
                 <div>
-                    <button @click="openBatchAddEditModal(null)">Create Batch</button>
-                </div>
-                <div>
                     <button @click="openStudentAddEditModal(null)">Create Student</button>
                 </div>
+
             </div>
           <div class="w-full px-4 lg:w-9/12">
-            <card-batches v-if="department && department.batches" :departmentId="department" :initRows="department.batches.data" @editBatch="openBatchAddEditModal"/>
-            <button @click.prevent="loadmorebatch" class="font-normal text-gray-600 hover:text-gray-800">
+             <card-students v-if="batch" :initRows="batch.students.data" :parentScope="{ department: department.id, batch: batch.id }" @edit="openStudentAddEditModal"/>
+            <button @click.prevent="loadmore(batch.students, { name: 'batch/get', params: { id: batch.id }, query: { students: true } }, 'students')" class="font-normal text-gray-600 hover:text-gray-800">
               Load more
             </button>
           </div>
@@ -63,29 +60,35 @@
 </template>
 <script>
 
+import ForwardPagination from '@/mixins/forwadPagination'
+
 import CardBatches from "@/components/Cards/CardBatches.vue"
+import CardStudents from '@/components/Cards/CardStudents.vue'
 import BatchAddEditModal from "@/components/Modals/BatchAddEdit.vue"
 import StudentAddEditModal from "@/components/Modals/StudentAddEdit.vue"
 
 export default {
     components: {
         CardBatches,
+        CardStudents,
         BatchAddEditModal,
         StudentAddEditModal
     },
+    mixins: [ForwardPagination],
     data() {
         return {
             department: null,
+            batch: null,
             error: null,
             batchAddEditModalData: {
                 show: false,
                 model: null,
                 parentModel: null,
                 labels: {
-                    heading: '',
-                    subheading: '',
+                    heading: 'Edit Batch',
+                    subheading: 'Update Batch information',
                     input: 'Batch Name',
-                    button: '',
+                    button: 'Update',
 
                 }
             },
@@ -105,80 +108,57 @@ export default {
     },
     computed: {
         total_student() {
-            if(this.department) {
-                return this.department.students_count
+            if(this.batch) {
+                return this.batch.students_count
             }
             return 0
         },
-        total_batch() {
-            if(this.department) {
-                return this.department.batches_count
-            } else {
-                return 0
-            }
+        departmentName() {
+            if(!this.batch) return ''
+            return this.batch.department.name + ' | ' + this.department.id
+        },
+        batchName() {
+            if(!this.batch) return ''
+            return this.batch.name + ' | ' + this.batch.id
         }
     },
     watch: {
-        department: {
+        batch: {
             immediate: true,
             handler() {
-                if(this.department) {
-                    this.batchAddEditModalData.parentModel = this.department.id
-                    this.studentAddEditModalData.parentModel = { id: this.department.id, name: this.department.name }
+                if(this.batch) {
+                    this.batchAddEditModalData.model = { id: this.batch.id }
+                    this.batchAddEditModalData.parentModel = this.batch.department.id
+
+                    this.studentAddEditModalData.parentModel = {
+                        department: this.batch.department,
+                        batch: { id: this.batch.id, name: this.batch.name }
+                    }
                 }
             }
         }
     },
     created() {
         console.log('created')
-        this.fetchDepartment()
+        this.fetchPageMasterData()
     },
     methods: {
-        fetchDepartment() {
-            this.$store.dispatch('department/get', {
+        fetchPageMasterData() {
+            this.$store.dispatch('batch/get', {
                 id: this.$route.params.id,
                 queryObject: {
-                    batches: true,
+                    students: true
                 }
             })
             .then(res => {
-                console.log('department single: ', res)
-                this.department = res
+                console.log('batch single: ', res)
+                this.batch = res
+                this.department = res.department
 
             })
         },
-        loadmorebatch() {
-            if(this.department.batches.next_page_url) {
-                this.$store.dispatch('department/get', {
-                    id: this.department.id,
-                    queryObject: {
-                        batches: true,
-                        page: this.department.batches.current_page + 1
-                    }
-                })
-                .then(res => {
-                    console.log('department single: ', res.batches.data)
-                    this.department.batches.data.push(...res.batches.data)
-                    // this.department.batches.data.splice(this.department.batches.data.length, 0, ...res.batches.data)
-                    this.department.batches.next_page_url = res.batches.next_page_url
-                    this.department.batches.current_page = res.batches.current_page
-                })
-
-            }
-        },
-        openBatchAddEditModal(model=null) {
-            if(model) {
-                this.batchAddEditModalData.labels.heading = 'Edit Batch'
-                this.batchAddEditModalData.labels.subheading = 'Update Batch information'
-                this.batchAddEditModalData.labels.button = 'Update'
-
-            } else {
-                this.batchAddEditModalData.labels.heading = 'Create new Batch'
-                this.batchAddEditModalData.labels.subheading = 'Provide Batch information'
-                this.batchAddEditModalData.labels.button = 'Create'
-            }
-
-            this.batchAddEditModalData.model = model
+        openBatchAddEditModal() {
+            this.batchAddEditModalData.model.name = this.batch.name
             this.batchAddEditModalData.show = true
 
 
@@ -189,6 +169,7 @@ export default {
 
         // --- student add edit modal
         openStudentAddEditModal(model=null) {
+            console.log('openStudentAddEditModal')
             if(model) {
                 this.studentAddEditModalData.labels.heading = 'Edit Student'
                 this.studentAddEditModalData.labels.subheading = 'Update Student information'
@@ -211,12 +192,14 @@ export default {
 
 
         syncBatch(batch) {
+            this.batch.name = batch.name
             this.closeBatchAddEditModal()
-            this.fetchDepartment()
         },
 
-        syncStudent(batch) {
+        syncStudent(studentData) {
             this.closeStudentAddEditModal()
+            const index = this.batch.students.data.findIndex(item => item.id == studentData.id)
+            this.batch.students.data.splice(index, 1, studentData)
         }
     }
 };

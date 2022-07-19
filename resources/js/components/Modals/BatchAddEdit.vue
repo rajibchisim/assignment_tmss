@@ -60,8 +60,10 @@ export default {
             handler() {
                 if(this.modalData.model) {
                     this.formData.name = this.modalData.model.name
+                    this.formData.department_id = this.modalData.parentModel
                 } else {
                     this.formData.name = ''
+                    this.formData.department_id = this.modalData.parentModel
                 }
             }
         }
@@ -71,18 +73,17 @@ export default {
             this.$validator.validate().then(valid => {
                 if(!valid) {
                     console.log('Form invalid')
+
                 } else {
-                    console.log('Form ok')
-                    this.register()
+                    this.modalData.model ? this.updateModel() : this.createModel()
                 }
             })
 
 
         },
-        register() {
+        createModel() {
             this.progress = true
             this.$store.dispatch('batch/create', {
-                department_id: this.modalData.parentModel,
                 ...this.formData
             })
             .then(batch => {
@@ -91,6 +92,28 @@ export default {
                 this.$emit('saveSync', batch)
             })
             .catch(errors => {
+                this.$toast.open({ message: 'Unssucssful!', type: 'error'})
+                this.progress = false
+                if(typeof errors == 'object' && errors != null) {
+                    this.$setErrorsFromResponse(errors)
+                } else {
+                    this.errorMessage = errors
+                }
+            })
+        },
+        updateModel() {
+            this.progress = true
+            this.$store.dispatch('batch/update', {
+                id: this.modalData.model.id,
+                payload: this.formData
+            })
+            .then(batch => {
+                this.$toast.open({ message: 'Success!', type: 'success'})
+                this.progress = false
+                this.$emit('saveSync', batch)
+            })
+            .catch(errors => {
+                this.$toast.open({ message: 'Unssucssful!', type: 'error'})
                 this.progress = false
                 if(typeof errors == 'object' && errors != null) {
                     this.$setErrorsFromResponse(errors)

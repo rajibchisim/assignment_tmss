@@ -4,6 +4,7 @@ export default {
             search: {
                 action: '',
                 department_id: '',
+                batch_id: '',
                 terms: '',
                 debounce: null,
                 progress: false,
@@ -24,7 +25,7 @@ export default {
         },
         searchRows(terms) {
             this.search.progress = true
-            this.$store.dispatch(this.search.action, { terms, department_id: this.search.department_id })
+            this.$store.dispatch(this.search.action, { terms, department_id: this.search.department_id, batch_id: this.search.batch_id })
             .then((res)=>{
                 this.search.progress = false
                 this.search.result = res.data

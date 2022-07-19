@@ -40,7 +40,7 @@
             @click.self="searchShowToggle(false)"
             v-if="search.terms != '' && search.result.length && search.show"
         >
-            <table-batches :rows="search.result" class="bg-white"/>
+            <table-batches :rows="search.result" @edit="clearSearchAndForwardEditEvent($event)" class="bg-white"/>
         </div>
     </div>
 
@@ -80,6 +80,13 @@ export default {
             }
         },
     },
+    methods: {
+        clearSearchAndForwardEditEvent(data) {
+            console.log('clear')
+            this.$emit('edit', data)
+            this.clearSearch()
+        }
+    }
 }
 </script>
 

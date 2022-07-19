@@ -14,12 +14,7 @@
                     <fieldset :disabled="progress ? true : false">
                         <div class="mt-4">
                             <label class="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-200" for="name">Department</label>
-                            <input disabled :value="modalData.parentModel.name" class="block w-full px-4 py-1 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300" type="text">
-                        </div>
-                        <div class="relative mt-4">
-                            <label class="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-200" for="name">Student full name</label>
-                            <input id="name" name="name"  v-model="formData.name" class="block w-full px-4 py-1 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300" type="text">
-                            <span class="absolute right-0 text-xs text-red-500 -bottom-4">{{ errors.first('name') }}</span>
+                            <input disabled :value="departmentName" class="block w-full px-4 py-1 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300" type="text">
                         </div>
                         <div class="mt-4">
                             <label class="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-200" for="batch_id">{{ modalData.labels.input }}</label>
@@ -59,6 +54,11 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="relative mt-4">
+                            <label class="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-200" for="name">Student full name</label>
+                            <input id="name" name="name"  v-model="formData.name" class="block w-full px-4 py-1 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300" type="text">
+                            <span class="absolute right-0 text-xs text-red-500 -bottom-4">{{ errors.first('name') }}</span>
                         </div>
                         <!-- v-validate="'required'" -->
                         <div class="flex items-center justify-center h-4 mt-2">
@@ -118,10 +118,21 @@ export default {
                 }
 
                 if(this.modalData.parentModel) {
-                    this.search.department_id = this.modalData.parentModel.id
-                    this.formData.department_id = this.modalData.parentModel.id
+                    this.search.department_id = this.formData.department_id = this.modalData.parentModel.department.id
+                    this.search.batch_id = this.formData.batch_id =this.modalData.parentModel.batch.id
+                    this.batch = this.modalData.parentModel.batch
+
                 }
             }
+        }
+    },
+    computed: {
+        departmentName() {
+            if(this.modalData && this.modalData.parentModel.department) {
+                return this.modalData.parentModel.department.id + ' | ' + this.modalData.parentModel.department.name
+            }
+
+            return ''
         }
     },
     methods: {
@@ -145,17 +156,36 @@ export default {
                 if(!valid) {
                     console.log('Form invalid')
                 } else {
-                    console.log('Form ok')
-                    this.register()
+                    this.modalData.model ? this.updateModel() : this.storeModel()
                 }
             })
 
 
         },
-        register() {
+        storeModel() {
             this.progress = true
             this.$store.dispatch('student/create', {
                 ...this.formData
+            })
+            .then(student => {
+                this.$toast.open({ message: 'Success!', type: 'success'})
+                this.progress = false
+                this.$emit('saveSync', student)
+            })
+            .catch(errors => {
+                this.progress = false
+                if(typeof errors == 'object' && errors != null) {
+                    this.$setErrorsFromResponse(errors)
+                } else {
+                    this.errorMessage = errors
+                }
+            })
+        },
+        updateModel() {
+            this.progress = true
+            this.$store.dispatch('student/update', {
+                id: this.modalData.model.id,
+                payload: this.formData
             })
             .then(student => {
                 this.$toast.open({ message: 'Success!', type: 'success'})

@@ -34,13 +34,13 @@
     </div>
     <div class="relative">
         <div>
-            <table-batches :rows="initRows" v-on="$listeners"/>
+            <table-students :rows="initRows" v-on="$listeners"/>
         </div>
         <div class="absolute top-0 w-full h-full pb-8 pl-8 bg-black border bg-opacity-10"
             @click.self="searchShowToggle(false)"
             v-if="search.terms != '' && search.result.length && search.show"
         >
-            <table-batches :rows="search.result" class="bg-white"/>
+            <table-students :rows="search.result" class="bg-white" @edit="clearSearchAndForwardEditEvent($event)"/>
         </div>
     </div>
 
@@ -48,38 +48,41 @@
 </template>
 
 <script>
-import TableBatches from '@/components/Tables/TableBatches.vue'
+import TableStudents from '@/components/Tables/TableStudents.vue'
 import Searchable from '@/mixins/searchable'
 
 export default {
     components:{
-        TableBatches
+        TableStudents
     },
     mixins: [Searchable],
-    props: ['departmentId', 'initRows'],
+    props: ['parentScope', 'initRows'],
     data() {
         return {
             rows: [],
             search: {
-                action: 'batch/search',
+                action: 'student/search',
             }
         }
     },
     watch: {
-        departmentId: {
+        parentScope: {
             immediate: true,
-            handler(val) {
-                /* if(val) {
-                    this.$store.dispatch('batch/all', { department: this.departmentId })
-                    .then(res => {
-                        this.departments = res.data
-                    })
-                } */
-                console.log('card student department id:', this.departmentId)
-                this.search.department_id = this.departmentId.id
+            handler() {
+                console.log(this.parentScope)
+                if(this.parentScope) {
+                    this.search.department_id = this.parentScope.department
+                    this.search.batch_id = this.parentScope.batch
+                }
             }
         },
     },
+    methods: {
+        clearSearchAndForwardEditEvent(data) {
+            this.$emit('edit', data)
+            this.clearSearch()
+        }
+    }
 }
 </script>
 

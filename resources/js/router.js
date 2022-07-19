@@ -8,7 +8,8 @@ import RegisterPage from '@/page/register.vue'
 import HomePage from '@/page/home.vue'
 import DashboardPage from '@/page/admin/Dashboard.vue'
 import AdminLayout from '@/layout/Admin.vue'
-import DepartmentPage from '@/page/department.vue'
+import DepartmentPage from '@/page/admin/department.vue'
+import BatchPage from '@/page/admin/batch.vue'
 
 const routes = [
     {   path: '/login',
@@ -39,7 +40,12 @@ const routes = [
                 path: 'departments/:id',
                 component: DepartmentPage,
                 name: 'department'
-            }
+            },
+            {
+                path: 'batches/:id',
+                component: BatchPage,
+                name: 'batch'
+            },
         ],
         // component: () => import('@/page/admin/Dashboard.vue'),
         meta: {
