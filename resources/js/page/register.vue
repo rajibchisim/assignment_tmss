@@ -102,6 +102,7 @@ export default {
             this.$store.dispatch('auth/register', this.formData)
             .then(res => {
                 this.progress = false
+                this.$router.push({ name: 'home' })
             })
             .catch(errors => {
                 this.progress = false

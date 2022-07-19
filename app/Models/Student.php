@@ -21,4 +21,9 @@ class Student extends Model
     {
         return $this->belongsTo(Batch::class);
     }
+
+    public function results()
+    {
+        return $this->hasMany(Result::class);
+    }
 }

@@ -25,12 +25,15 @@ export default {
             axios.post('/api/auth/logout')
             commit('set_token', null, { root: true })
         },
-        register({}, data) {
+        register({commit}, data) {
             return new Promise((resolve, reject) => {
                 axios.post('/api/auth/register', data)
                 .then(res => {
-                    console.log('good response')
+                    console.log('response status', res.data.status)
+                    console.log('good response', res)
                     if(res.data.status == 200) {
+                        commit('set_token', res.data.auth.token, { root: true })
+                        commit('set_user', res.data.auth.user, { root: true })
                         resolve(res.data)
                     }
                     else if(res.data.status == 422) {
@@ -40,7 +43,7 @@ export default {
                     }
                 })
                 .catch(()=>{
-                    reject('Something went wrong! Try again.')
+                    reject('Something went wrong! Try again. CATCH')
                 })
 
             })

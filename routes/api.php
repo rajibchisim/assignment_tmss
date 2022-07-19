@@ -65,7 +65,7 @@ Route::group(
     Route::patch('/{student}/update', [StudentController::class, 'update']);
     Route::post('/store', [StudentController::class, 'store']);
     Route::get('/search', [StudentController::class, 'search']);
-    Route::get('/{batch}', [StudentController::class, 'show']);
+    Route::get('/{student}', [StudentController::class, 'show']);
     Route::get('/', [StudentController::class, 'index']);
 });
 

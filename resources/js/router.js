@@ -10,6 +10,7 @@ import DashboardPage from '@/page/admin/Dashboard.vue'
 import AdminLayout from '@/layout/Admin.vue'
 import DepartmentPage from '@/page/admin/department.vue'
 import BatchPage from '@/page/admin/batch.vue'
+import StudentPage from '@/page/admin/student.vue'
 
 const routes = [
     {   path: '/login',
@@ -45,6 +46,11 @@ const routes = [
                 path: 'batches/:id',
                 component: BatchPage,
                 name: 'batch'
+            },
+            {
+                path: 'students/:id',
+                component: StudentPage,
+                name: 'student'
             },
         ],
         // component: () => import('@/page/admin/Dashboard.vue'),

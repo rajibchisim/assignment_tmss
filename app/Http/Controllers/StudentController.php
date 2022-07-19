@@ -128,9 +128,32 @@ class StudentController extends Controller
      * @param  \App\Models\Student  $student
      * @return \Illuminate\Http\Response
      */
-    public function show(Student $student)
+    public function show(Student $student, Request $request)
     {
-        //
+        $student->load(['department', 'batch']);
+
+
+        $resultSortGpa = $request->gpa ? ($request->gpa == 'desc' ? 'desc' : 'asc' ) : null;
+        $resultSortDate = $request->date ? ($request->date == 'desc' ? 'desc' : 'asc') : null;
+
+        if($request->results) {
+            $results = DB::table('results')
+                        ->where('student_id', $student->id)
+                        ->when($resultSortGpa, function($query) use($resultSortGpa){
+                            $query->orderBy('gpa', $resultSortGpa);
+                        })
+                        ->when($resultSortDate, function($query) use($resultSortDate) {
+                            $query->orderBy('date', $resultSortDate);
+                        })
+                        ->simplePaginate(10);
+
+            $student->results = $results;
+        }
+
+        return response()->json([
+            'status' => 200,
+            'student' => $student,
+        ]);
     }
 
     /**

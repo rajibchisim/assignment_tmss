@@ -1,5 +1,5 @@
 const baseUrl = '/api/students'
-const { makeQueryString, modelUpdate } = require('./common')
+const { makeQueryString, modelUpdate, modelGet } = require('./common')
 
 
 export default {
@@ -23,7 +23,7 @@ export default {
                 return response.data.result
             }
         },
-        async get({}, data={id: '', queryObject: {}}) {
+        /* async get({}, data={id: '', queryObject: {}}) {
             const queryString = makeQueryString(data.queryObject)
             const response = await axios.get(`${baseUrl}/${data.id}?${queryString}`)
 
@@ -32,7 +32,8 @@ export default {
             } else {
                 return null
             }
-        },
+        }, */
+        get: ({}, data) => modelGet({}, data, baseUrl, 'student'),
         create({}, payload) {
             return new Promise(async (resolve, reject) => {
                 const response = await axios.post(`${baseUrl}/store`, payload)
