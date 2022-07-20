@@ -20,6 +20,9 @@ class CreateStudentsTable extends Migration
             $table->string('batch_name');
             $table->unsignedBigInteger('batch_id');
             $table->timestamps();
+
+            $table->foreign('batch_id')->references('id')->on('batches')->cascadeOnDelete();
+            $table->foreign('department_id')->references('id')->on('departments')->cascadeOnDelete();
         });
     }
 

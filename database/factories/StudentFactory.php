@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Batch;
 use App\Models\Department;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use stdClass;
 
 class StudentFactory extends Factory
 {
@@ -15,16 +16,16 @@ class StudentFactory extends Factory
      */
     public function definition()
     {
-        $department = Department::factory()->create();
         return [
             'name' => $this->faker->name(),
             'batch_name' => 'bat_'.random_int(1, 20),
-            'batch_id' => function() use($department) {
-                return Batch::factory()->create(['department_id' => $department->id])->id;
+            'department_id' => function() {
+                return Department::factory()->create()->id;
             },
-            'department_id' => function() use($department){
-                return $department->id;
-            }
+            'batch_id' => function() use(&$department) {
+                return Batch::factory()->create()->id;
+
+            },
         ];
     }
 }

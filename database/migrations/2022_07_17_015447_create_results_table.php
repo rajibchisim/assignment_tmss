@@ -19,6 +19,8 @@ class CreateResultsTable extends Migration
             $table->float('gpa')->nullable();
             $table->date('date')->nullable();
             $table->timestamps();
+
+            $table->foreign('student_id')->references('id')->on('students')->cascadeOnDelete();
         });
     }
 

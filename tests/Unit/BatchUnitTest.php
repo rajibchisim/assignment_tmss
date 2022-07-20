@@ -28,6 +28,9 @@ class BatchUnitTest extends TestCase
     /** @test */
     public function it_belongs_to_department()
     {
+        $this->withoutExceptionHandling();
+
+
         $department = Department::factory()->create();
         $batch = Batch::factory()->create([ 'department_id' => $department->id ]);
 
