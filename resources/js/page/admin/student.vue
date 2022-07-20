@@ -24,7 +24,8 @@
             :studentId="student.id"
             @sort="sortOptionsToggle"
             @dateRange="dateFilerSeleted"
-            @toggleRangeFilter="toggleRangeFilter"/>
+            @toggleRangeFilter="toggleRangeFilter"
+            @edit="openResultAddEditModal(null, $event)"/>
         </div>
         <div class="mt-6 text-center">
             <button class="font-normal text-gray-600 hover:text-gray-800"
@@ -62,6 +63,7 @@
             v-if="resultAddEditModalData.show"
             @close="closeResultAddEditModal"
             @saveSync="syncResult"
+            @deleteSync="syncResultDelete"
         />
     </div>
 </template>
@@ -157,8 +159,13 @@ export default {
             } else {
                 this.student.results.data.push(data)
             }
-        }
-        ,
+        },
+        syncResultDelete(data) {
+            const index = this.student.results.data.findIndex(item => item.id == data.id)
+            if(index != -1) {
+                this.student.results.data.splice(index, 1)
+            }
+        },
         dateFilerSeleted(data) {
             if(data == 'clear') {
                 this.dateRangeFilter.query.toDate = ''

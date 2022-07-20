@@ -81,6 +81,7 @@ Route::group(
 
 ], function() {
     Route::patch('/{result}/update', [ResultController::class, 'update']);
+    Route::delete('/{result}/delete', [ResultController::class, 'destroy']);
     Route::post('/store', [ResultController::class, 'store']);
     Route::get('/search', [ResultController::class, 'search']);
     Route::get('/{result}', [ResultController::class, 'show']);

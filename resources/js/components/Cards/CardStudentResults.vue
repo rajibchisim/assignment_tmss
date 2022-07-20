@@ -64,6 +64,12 @@ export default {
                 this.search.student_id = this.studentId
             }
         }
+    },
+    methods: {
+        clearSearchAndForwardEditEvent(data) {
+            this.$emit('edit', data)
+            this.clearSearch()
+        }
     }
 };
 </script>

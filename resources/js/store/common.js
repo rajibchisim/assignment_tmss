@@ -58,6 +58,20 @@ const modelCreate = (data, baseUrl, responsKey, customUrl) => {
 }
 
 
+const modelDelete = (data={id: ''}, baseUrl, responsKey) => {
+    return new Promise(async (resolve, reject) => {
+        const response = await axios.delete(`${baseUrl}/${data.id}/delete`)
+
+        if(response.data.status == 200) {
+            resolve(response.data[responsKey])
+        } else {
+            reject(response.data.errors)
+        }
+    })
+
+}
+
+
 const modelSearch = (baseUrl, queryObject) => {
     return new Promise(async (resolve, reject) => {
         const queryString = makeQueryString(queryObject)
@@ -86,5 +100,6 @@ export {
     modelGet,
     modelSearch,
     mapOrderbyToString,
-    modelCreate
+    modelCreate,
+    modelDelete
 }

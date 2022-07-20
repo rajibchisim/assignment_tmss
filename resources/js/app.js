@@ -34,6 +34,8 @@ const config = {
     // useConstraintAttrs: true
 };
 
+// Vue.component('confirm-delete', require('@/components/Modals/ConfirmDelete').default)
+
 Vue.use(VeeValidate, config);
 Vue.prototype.$setErrorsFromResponse = function(errors) {
     // only allow this function to be run if the validator exists

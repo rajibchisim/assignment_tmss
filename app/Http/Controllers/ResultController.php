@@ -159,6 +159,11 @@ class ResultController extends Controller
      */
     public function destroy(Result $result)
     {
-        //
+        $result->delete();
+
+        return response()->json([
+            'status' => 200,
+            'result' => 'Result deleted'
+        ]);
     }
 }
