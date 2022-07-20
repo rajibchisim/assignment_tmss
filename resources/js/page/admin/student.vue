@@ -57,6 +57,7 @@
             @saveSync="syncStudent"
             :disableDepartment="false"
             :disableBatch="false"
+            @deleteSync="syncStudentDelete"
         />
         <ResultAddEdit
             :modalData="resultAddEditModalData"
@@ -151,6 +152,9 @@ export default {
         },
         syncStudent(data) {
             this.student.name = data.name
+        },
+        syncStudentDelete(data) {
+            this.$router.push({ name: 'batch', params: { id: this.student.batch.id } })
         },
         syncResult(data) {
             const index = this.student.results.data.findIndex(item => item.id == data.id)

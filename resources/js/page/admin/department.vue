@@ -4,15 +4,13 @@
   >
     <div class="px-6">
       <div class="mt-8 text-center">
-        <h3
-          class="text-xl font-semibold leading-normal text-blueGray-700"
-        >
-          Department of: <span class="capitalize">{{ department ? department.name : ''  }}</span>
-        </h3>
-        <div class="mb-2 text-blueGray-600">
-          <i class="mr-2 text-lg fas fa-university text-blueGray-400"></i>
-          University of Computer Science
-        </div>
+            <h3
+            class="text-xl font-semibold leading-normal"
+            >
+            Department of: <span class="capitalize">{{ department ? department.name : ''  }}</span>
+            </h3>
+            <div class="mb-2 text-blueGray-600">University of Computer Science</div>
+
       </div>
       <div class="w-full px-4 text-center">
           <div class="flex justify-center py-4 pt-6 lg:pt-4">
@@ -48,7 +46,7 @@
                         </svg>
                     </button>
                 </div>
-                <card-students v-if="students" :initRows="students.data" :parentScope="{ department: this.department.id }"/>
+                <card-students v-if="students" :initRows="students.data" :parentScope="{ department: this.department.id }" @edit="openStudentAddEditModal"/>
             </div>
           <div class="w-full px-4 lg:w-6/12">
             <div class="px-4 mb-2 text-left">
@@ -70,13 +68,20 @@
       </div>
     </div>
 
-    <batch-add-edit-modal :modalData="batchAddEditModalData" v-if="batchAddEditModalData.show" @close="closeBatchAddEditModal" @saveSync="syncBatch"/>
+    <batch-add-edit-modal
+        v-if="batchAddEditModalData.show"
+        :modalData="batchAddEditModalData"
+        @close="closeBatchAddEditModal"
+        @saveSync="syncBatch"
+        @deleteSync="syncBatchDelete"
+    />
     <student-add-edit-modal
         :modalData="studentAddEditModalData"
         v-if="studentAddEditModalData.show"
         @close="closeStudentAddEditModal"
         @saveSync="syncStudent"
         :disableBatch="false"
+        @deleteSync="syncStudentDelete"
     />
   </div>
 </template>
@@ -177,25 +182,6 @@ export default {
 
             })
         },
-        /* loadmorebatch() {
-            if(this.department.batches.next_page_url) {
-                this.$store.dispatch('department/get', {
-                    id: this.department.id,
-                    queryObject: {
-                        batches: true,
-                        page: this.department.batches.current_page + 1
-                    }
-                })
-                .then(res => {
-                    console.log('department single: ', res.batches.data)
-                    this.department.batches.data.push(...res.batches.data)
-                    // this.department.batches.data.splice(this.department.batches.data.length, 0, ...res.batches.data)
-                    this.department.batches.next_page_url = res.batches.next_page_url
-                    this.department.batches.current_page = res.batches.current_page
-                })
-
-            }
-        }, */
         openBatchAddEditModal(model=null) {
             if(model) {
                 this.batchAddEditModalData.labels.heading = 'Edit Batch'
@@ -221,6 +207,13 @@ export default {
             this.closeBatchAddEditModal()
             this.fetchDepartment()
         },
+        syncBatchDelete(data) {
+            const index = this.department.batches.data.findIndex(item => item.id == data.id)
+            if(index != -1) {
+                this.total_student -= this.department.batches.data[index].students_count
+                this.department.batches.data.splice(index, 1)
+            }
+        },
 
         syncStudent(model) {
             this.closeStudentAddEditModal()
@@ -232,6 +225,13 @@ export default {
                 this.total_student = this.students.total + 1
             }
 
+        },
+        syncStudentDelete(data) {
+            const index = this.students.data.findIndex(item => item.id == data.id)
+            if(index != -1) {
+                this.students.data.splice(index, 1)
+                this.total_student--
+            }
         }
     }
 };

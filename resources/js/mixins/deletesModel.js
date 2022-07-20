@@ -7,6 +7,7 @@ export default {
     },
     data() {
         return {
+            delete_model_action: '',
             show_delete_model_modal: false
         }
     },
@@ -20,8 +21,7 @@ export default {
         },
         confirm_delete_model() {
             this.progress = true
-            const url = 'result/delete'
-            this.$store.dispatch(url, {
+            this.$store.dispatch(this.delete_model_action, {
                 id: this.modalData.model.id
             })
             .then(result => {

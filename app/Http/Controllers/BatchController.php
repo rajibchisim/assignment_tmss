@@ -206,6 +206,11 @@ class BatchController extends Controller
      */
     public function destroy(Batch $batch)
     {
-        //
+        $batch->delete();
+
+        return response()->json([
+            'status' => 200,
+            'batch' => 'Batch deleted'
+        ]);
     }
 }

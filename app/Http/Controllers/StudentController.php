@@ -290,6 +290,11 @@ class StudentController extends Controller
      */
     public function destroy(Student $student)
     {
-        //
+        $student->delete();
+
+        return response()->json([
+            'status' => 200,
+            'student' => 'Student deleted'
+        ]);
     }
 }

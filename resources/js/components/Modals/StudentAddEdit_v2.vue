@@ -2,6 +2,11 @@
   <div class="fixed inset-0 bg-black bg-opacity-25" @click="bodyClick">
       <div class="container flex items-center h-full mx-auto">
           <div class="relative w-full max-w-sm mx-auto bg-white rounded-lg shadow-lg md:p-10 lg:max-w-4xl">
+            <!-- DELETE PROMPT -->
+            <confirm-delete @confirm="confirm_delete_model" @cancel="cancel_delete_modal" v-if="show_delete_model_modal" class="absolute inset-0 z-20"/>
+            <ButtonDelete @prompt="prompt_delete_modal" class="left-4 top-4"/>
+            <!-- DELETE PROMPT -->
+
             <button-close v-on="$listeners"/>
             <h2 class="text-2xl font-semibold text-center text-gray-700 dark:text-white">{{ modalData.labels.heading }}</h2>
 
@@ -70,13 +75,17 @@
 import Searchable from '@/mixins/searchable'
 import InputSearchable from '@/components/Forms/inputSearchable'
 import ButtonClose from '@/components/Modals/buttonClose'
+import DeletesModel from '@/mixins/deletesModel'
 
 export default {
     components: {
         InputSearchable,
         ButtonClose
     },
-    mixins: [Searchable],
+    mixins: [
+        Searchable,
+        DeletesModel
+    ],
     props: {
         modalData: {
             type: Object,
@@ -97,6 +106,7 @@ export default {
     },
     data() {
         return {
+            delete_model_action: 'student/delete',
             progress: false,
             errorMessage: null,
             formData: {

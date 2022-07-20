@@ -4,23 +4,23 @@
   >
     <div class="px-6">
       <div class="relative mt-8 text-center text-gray-700">
-        <h3
-          class="text-xl font-semibold leading-normal"
-        >
-          Batch: {{ batchName }}
-        </h3>
-        <h2 class="text-lg">
-            <router-link :to="{ name: 'department', params: { id: this.department ? this.department.id : '' } }">Department of: <span class="capitalize">{{ departmentName  }}</span></router-link>
-        </h2>
-        <div class="mb-2">
-          University of Computer Science
-        </div>
+            <h3
+            class="text-xl font-semibold leading-normal"
+            >
+            Batch: {{ batchName }}
+            </h3>
+            <h2 class="text-lg">
+                <router-link :to="{ name: 'department', params: { id: this.department ? this.department.id : '' } }">Department of: <span class="capitalize">{{ departmentName  }}</span></router-link>
+            </h2>
+            <div class="mb-2">
+            University of Computer Science
+            </div>
 
-        <button @click="openBatchAddEditModal" class="absolute p-2 top-4 right-4 hover:text-gray-600">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-            </svg>
-        </button>
+            <button @click="openBatchAddEditModal" class="absolute p-2 top-4 right-4 hover:text-gray-600">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg>
+            </button>
       </div>
 
 
@@ -60,7 +60,13 @@
       </div>
     </div>
 
-    <batch-add-edit-modal :modalData="batchAddEditModalData" v-if="batchAddEditModalData.show" @close="closeBatchAddEditModal" @saveSync="syncBatch"/>
+    <batch-add-edit-modal
+        v-if="batchAddEditModalData.show"
+        :modalData="batchAddEditModalData"
+        @close="closeBatchAddEditModal"
+        @saveSync="syncBatch"
+        @deleteSync="syncBatchDelete"
+    />
     <student-add-edit-modal :transfer="false" :modalData="studentAddEditModalData" v-if="studentAddEditModalData.show" @close="closeStudentAddEditModal" @saveSync="syncStudent"/>
   </div>
 </template>
@@ -195,6 +201,9 @@ export default {
         syncBatch(batch) {
             this.batch.name = batch.name
             this.closeBatchAddEditModal()
+        },
+        syncBatchDelete() {
+            this.$router.push({name: 'department', params: { id: this.batch.department.id }})
         },
 
         syncStudent(studentData) {

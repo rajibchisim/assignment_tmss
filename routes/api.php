@@ -51,6 +51,7 @@ Route::group(
 
 ], function() {
     Route::patch('/{batch}/update', [BatchController::class, 'update']);
+    Route::delete('/{batch}/delete', [BatchController::class, 'destroy']);
     Route::post('/store', [BatchController::class, 'store']);
     Route::get('/search', [BatchController::class, 'search']);
     Route::get('/{batch}', [BatchController::class, 'show']);
@@ -66,6 +67,7 @@ Route::group(
 ], function() {
     Route::patch('/{student}/update-transfer', [StudentController::class, 'updateTransfer']);
     Route::patch('/{student}/update', [StudentController::class, 'update']);
+    Route::delete('/{student}/delete', [StudentController::class, 'destroy']);
     Route::post('/store', [StudentController::class, 'store']);
     Route::get('/search', [StudentController::class, 'search']);
     Route::get('/{student}', [StudentController::class, 'show']);

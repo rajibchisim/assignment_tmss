@@ -1,4 +1,4 @@
-const { makeQueryString, modelUpdate } = require('./common')
+const { makeQueryString, modelUpdate, modelDelete } = require('./common')
 const baseUrl = '/api/batches'
 export default {
     actions: {
@@ -40,8 +40,6 @@ export default {
             })
         },
         update: ({}, payload) => modelUpdate({}, payload, baseUrl, 'batch'),
-        delete() {
-
-        }
+        delete:({}, payload) => modelDelete(payload, baseUrl)
     }
 }
