@@ -168,7 +168,26 @@ class DepartmentController extends Controller
      */
     public function update(Request $request, Department $department)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string'
+        ]);
+
+        if($validator->fails()) {
+            return response()->json([
+                'status' => 422,
+                'errors' => $validator->errors()
+            ]);
+        }
+
+        $validated = $validator->validated();
+
+        $department->name = $validated['name'];
+        $department->save();
+
+        return response()->json([
+            'status' => 200,
+            'department' => $department
+        ]);
     }
 
     /**
@@ -179,6 +198,12 @@ class DepartmentController extends Controller
      */
     public function destroy(Department $department)
     {
-        //
+        $department->delete();
+
+
+        return response()->json([
+            'status' => 200,
+            'department' => 'Department deleted'
+        ]);
     }
 }

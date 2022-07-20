@@ -1,8 +1,14 @@
 <template>
-  <div class="fixed inset-0 bg-black bg-opacity-25" @click="$emit('close')">
+  <div class="fixed inset-0 bg-black bg-opacity-25">
       <div class="container flex items-center h-full mx-auto">
-          <div @click.stop="" class="w-full max-w-sm mx-auto overflow-hidden bg-white rounded-lg shadow-lg md:p-10 lg:max-w-4xl">
-            <h2 class="text-2xl font-semibold text-center text-gray-700 dark:text-white">{{ modalData.labels.heading }}</h2>
+          <div @click.stop="" class="relative w-full max-w-sm mx-auto overflow-hidden bg-white rounded-lg shadow-lg md:p-10 lg:max-w-4xl">
+            <!-- DELETE PROMPT -->
+            <confirm-delete @confirm="confirm_delete_model" @cancel="cancel_delete_modal" v-if="show_delete_model_modal" class="absolute inset-0 z-20"/>
+            <ButtonDelete @prompt="prompt_delete_modal" class="absolute"/>
+            <!-- DELETE PROMPT -->
+            <button-close v-on="$listeners"/>
+
+            <h2 class="text-2xl font-semibold text-center text-gray-600">{{ modalData.labels.heading }}</h2>
 
             <div class="w-full px-6 py-8 md:px-8">
                 <div class="flex items-center justify-between mt-4">
@@ -43,10 +49,20 @@
 </template>
 
 <script>
+import ButtonClose from '@/components/Modals/buttonClose'
+import DeletesModel from '@/mixins/deletesModel'
+
 export default {
+    components: {
+        ButtonClose
+    },
+    mixins: [
+        DeletesModel
+    ],
     props: ['modalData'],
     data() {
         return {
+            delete_model_action: 'department/delete',
             progress: false,
             errorMessage: null,
             formData: {

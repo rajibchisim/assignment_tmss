@@ -46,7 +46,7 @@
         </thead>
         <tbody v-if="initRows">
             <tr v-if="initRows.length == 0">
-                <td colspan="3" class="py-4 text-center text-gray-600 align-middle">No results found.</td>
+                <td colspan="3" class="py-4 text-center text-gray-600 align-middle">No results yet.</td>
             </tr>
             <tr v-for="(row, index) in initRows" :key="index" class="text-left hover:bg-gray-100 group">
                 <td

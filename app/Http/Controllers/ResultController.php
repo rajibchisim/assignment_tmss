@@ -93,7 +93,7 @@ class ResultController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'student_id' => 'required|exists:students,id',
-            'gpa' => 'required|numeric',
+            'gpa' => 'required|numeric|max:5|min:0',
             'date' => 'required|date'
         ]);
 

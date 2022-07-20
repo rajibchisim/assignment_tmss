@@ -22,6 +22,9 @@
           </tr>
         </thead>
         <tbody v-if="rows">
+            <tr v-if="rows.length == 0">
+                <td colspan="3" class="py-4 text-center text-gray-600 align-middle">No Students yet.</td>
+            </tr>
           <tr v-for="(row, index) in rows" :key="row.id" class="text-left hover:bg-gray-100 group">
             <td
               class="p-4 px-6 text-xs border-t-0 border-l-0 border-r-0"

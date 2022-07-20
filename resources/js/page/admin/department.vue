@@ -3,7 +3,7 @@
     class="relative flex flex-col w-full min-w-0 mt-8 mb-6 break-words bg-white rounded-lg shadow-xl"
   >
     <div class="px-6">
-      <div class="mt-8 text-center">
+      <div class="relative mt-6 text-center">
             <h3
             class="text-xl font-semibold leading-normal"
             >
@@ -11,9 +11,16 @@
             </h3>
             <div class="mb-2 text-blueGray-600">University of Computer Science</div>
 
+            <button @click="openDepartmentAddEditModal(null, department)" class="absolute p-2 top-4 right-4 hover:text-gray-600">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg>
+            </button>
+
+
       </div>
       <div class="w-full px-4 text-center">
-          <div class="flex justify-center py-4 pt-6 lg:pt-4">
+          <div class="flex justify-center py-2 pt-2 lg:pt-4">
             <div class="p-3 mr-4 text-center">
               <span
                 class="block text-xl font-bold tracking-wide uppercase text-blueGray-600"
@@ -35,7 +42,7 @@
 
 
 
-      <div class="py-10 mt-10 text-center border-t border-blueGray-200">
+      <div class="py-10 mt-6 text-center border-t border-blueGray-200">
         <div class="flex flex-wrap justify-center">
             <div class="w-full px-4 lg:w-6/12">
                 <div class="px-4 mb-2 text-left">
@@ -83,11 +90,19 @@
         :disableBatch="false"
         @deleteSync="syncStudentDelete"
     />
+    <DepartmentAddEdit
+        :modalData="departmentAddEditModalData"
+        v-if="departmentAddEditModalData.show"
+        @close="closedepartmentAddEditModal"
+        @saveSync="syncDepartment"
+        @deleteSync="syncDepartmentDelete"
+    />
   </div>
 </template>
 <script>
 import ForwardPagination from '@/mixins/forwadPagination'
 import SortableOptionToggle from '@/mixins/sortableOptionToggle'
+import ModalDepartmentAddEdit from '@/mixins/modalDepartmentAddEdit'
 
 
 import CardBatches from "@/components/Cards/CardBatches.vue"
@@ -96,6 +111,7 @@ import BatchAddEditModal from "@/components/Modals/BatchAddEdit_v2.vue"
 
 import StudentAddEditModal from "@/components/Modals/StudentAddEdit_v2.vue"
 import StudentAddEditMixin from '@/mixins/studentAddEditModal'
+
 
 export default {
     components: {
@@ -107,7 +123,8 @@ export default {
     mixins: [
         ForwardPagination,
         SortableOptionToggle,
-        StudentAddEditMixin
+        StudentAddEditMixin,
+        ModalDepartmentAddEdit
     ],
     data() {
         return {
@@ -232,6 +249,14 @@ export default {
                 this.students.data.splice(index, 1)
                 this.total_student--
             }
+        },
+        syncDepartment(model) {
+
+            this.department.name = model.name
+            this.closedepartmentAddEditModal()
+        },
+        syncDepartmentDelete(data) {
+            this.$router.push({ name: 'home' })
         }
     }
 };

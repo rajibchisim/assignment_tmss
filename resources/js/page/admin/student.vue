@@ -125,7 +125,10 @@ export default {
             return {
                 name: this.student ? this.student.name : '',
                 department: this.student ? this.student.department.id + ' | ' + this.student.department.name : '',
-                batch: this.student ? this.student.batch.id + ' | ' + this.student.batch.name : ''
+                department_id: this.student ? this.student.department.id : '',
+                batch: this.student ? this.student.batch.id + ' | ' + this.student.batch.name : '',
+                batch_id: this.student ? this.student.batch.id : '',
+
             }
         },
         results() {

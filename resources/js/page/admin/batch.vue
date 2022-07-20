@@ -10,7 +10,10 @@
             Batch: {{ batchName }}
             </h3>
             <h2 class="text-lg">
-                <router-link :to="{ name: 'department', params: { id: this.department ? this.department.id : '' } }">Department of: <span class="capitalize">{{ departmentName  }}</span></router-link>
+                <router-link :to="{ name: 'department', params: { id: this.department ? this.department.id : '' } }"
+                    class="hover:text-gray-800">
+                    Department of: <span class="capitalize">{{ departmentName  }}</span>
+                </router-link>
             </h2>
             <div class="mb-2">
             University of Computer Science

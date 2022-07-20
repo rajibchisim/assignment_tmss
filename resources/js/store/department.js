@@ -1,5 +1,5 @@
 const baseUrl = '/api/departments'
-const { makeQueryString, modelCreate } = require('./common')
+const { makeQueryString, modelCreate, modelDelete, modelUpdate } = require('./common')
 
 
 export default {
@@ -35,11 +35,8 @@ export default {
         },
         create: ({}, data) => modelCreate(data, baseUrl, 'department'),
 
-        update() {
+        update: ({}, payload) => modelUpdate({}, payload, baseUrl, 'department'),
 
-        },
-        delete() {
-
-        }
+        delete:({}, payload) => modelDelete(payload, baseUrl, 'department')
     }
 }

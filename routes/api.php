@@ -36,6 +36,8 @@ Route::group(
     'prefix' => '/departments'
 
 ], function() {
+    Route::delete('/{department}/delete', [DepartmentController::class, 'destroy']);
+    Route::patch('/{department}/update', [DepartmentController::class, 'update']);
     Route::get('/search', [DepartmentController::class, 'search']);
     Route::post('/store', [DepartmentController::class, 'store']);
     Route::get('/{department}', [DepartmentController::class, 'show']);

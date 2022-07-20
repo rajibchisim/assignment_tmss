@@ -69,37 +69,39 @@
       </div>
     </div>
 
-    <batch-add-edit-modal :modalData="batchAddEditModalData" v-if="batchAddEditModalData.show" @close="closeBatchAddEditModal" @saveSync="syncBatch"/>
-    <DepartmentAddEdit :modalData="departmentAddEditModalData" v-if="departmentAddEditModalData.show" @close="closedepartmentAddEditModal" @saveSync="syncDepartment"/>
+    <batch-add-edit-modal
+        :modalData="batchAddEditModalData"
+        v-if="batchAddEditModalData.show"
+        @close="closeBatchAddEditModal"
+        @saveSync="syncBatch"
+     />
+    <DepartmentAddEdit
+        :modalData="departmentAddEditModalData"
+        v-if="departmentAddEditModalData.show"
+        @close="closedepartmentAddEditModal"
+        @saveSync="syncDepartment"
+    />
   </div>
 </template>
 <script>
 import CardDepartments from "@/components/Cards/CardDepartments.vue";
 import CardBatches from '@/components/Cards/CardBatches.vue'
-import DepartmentAddEdit from '@/components/Modals/DepartmentAddEdit'
 import BatchAddEditModal from "@/components/Modals/BatchAddEdit_v2.vue"
+
+import ModalDepartmentAddEdit from '@/mixins/modalDepartmentAddEdit'
 export default {
   name: "dashboard-page",
   components: {
     CardDepartments,
-    DepartmentAddEdit,
     CardBatches,
     BatchAddEditModal
   },
+  mixins: [
+    ModalDepartmentAddEdit
+  ],
   data() {
     return {
         department: null,
-        departmentAddEditModalData: {
-            show: false,
-            model: null,
-            labels: {
-                heading: 'Edit Batch',
-                subheading: 'Update Batch information',
-                input: 'Department Name',
-                button: 'Update',
-
-            }
-        },
         batchAddEditModalData: {
                 show: false,
                 model: null,
@@ -125,26 +127,9 @@ export default {
         }
   },
     methods: {
-        openDepartmentAddEditModal(event, model = null) {
-            if(model) {
-                this.departmentAddEditModalData.labels.heading = 'Edit Department'
-                this.departmentAddEditModalData.labels.subheading = 'Update Department information'
-                this.departmentAddEditModalData.labels.button = 'Update'
-
-            } else {
-                this.departmentAddEditModalData.labels.heading = 'Create new Department'
-                this.departmentAddEditModalData.labels.subheading = 'Provide Department information'
-                this.departmentAddEditModalData.labels.button = 'Create'
-            }
-
-            this.departmentAddEditModalData.model = model
-            this.departmentAddEditModalData.show = true
-        },
-        closedepartmentAddEditModal() {
-            this.departmentAddEditModalData.show = false
-        },
         syncDepartment(model) {
-            this.department = model
+
+            this.department = { ...model, batches: { data: [] } }
             this.$refs.cDepartment.fetchInitData()
             this.closedepartmentAddEditModal()
         },

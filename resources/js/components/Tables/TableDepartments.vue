@@ -21,7 +21,10 @@
             </th> -->
           </tr>
         </thead>
-        <tbody>
+        <tbody v-if="departments">
+            <tr v-if="departments.length == 0">
+                <td colspan="2" class="py-4 text-center text-gray-600 align-middle">No Departments yet.</td>
+            </tr>
           <tr v-for="department in departments" :key="department.id" class="hover:bg-gray-100 group hover:cursor-pointer" @click="$emit('open', department)">
             <th
               class="p-4 px-6 text-xs text-left align-middle border-t-0 border-l-0 border-r-0 whitespace-nowrap"
