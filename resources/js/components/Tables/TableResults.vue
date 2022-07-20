@@ -25,7 +25,7 @@
                         </span>
                         <span>Date</span>
                     </button>
-                    <span class="flex items-center font-thin gap-x-2">
+                    <span class="flex items-center font-thin gap-x-2" v-if="!hideDateFilter">
                         <input type="checkbox" @change="$emit('toggleRangeFilter', $event)">
                         <span>
                             <input type="date" class="inline-block px-2 py-1 border" v-model="range.from" @change="$emit('dateRange', { from: $event.target.value })">
@@ -45,15 +45,15 @@
           </tr>
         </thead>
         <tbody v-if="initRows">
-            <tr v-if="initRows.data.length == 0">
+            <tr v-if="initRows.length == 0">
                 <td colspan="3" class="py-4 text-center text-gray-600 align-middle">No results found.</td>
             </tr>
-          <tr v-for="(row, index) in initRows.data" :key="index" class="text-left hover:bg-gray-100 group">
-            <td
-              class="p-4 px-6 text-xs border-t-0 border-l-0 border-r-0"
-            >
-              {{ row.id }}
-            </td>
+            <tr v-for="(row, index) in initRows" :key="index" class="text-left hover:bg-gray-100 group">
+                <td
+                class="p-4 px-6 text-xs border-t-0 border-l-0 border-r-0"
+                >
+                {{ row.id }}
+                </td>
             <td
               class="p-4 px-6 text-xs border-t-0 border-l-0 border-r-0 whitespace-nowrap"
             >
@@ -76,7 +76,7 @@
                 </router-link>
               </span>
             </td>
-          </tr>
+                      </tr>
         </tbody>
       </table>
     </div>
@@ -84,7 +84,7 @@
 
 <script>
 export default {
-    props: ['initRows'],
+    props: ['initRows', 'hideDateFilter'],
     data() {
         return {
             range: {

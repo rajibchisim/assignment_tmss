@@ -6,7 +6,7 @@
                 <h3 class="text-base font-semibold text-left text-gray-700">Results</h3>
             </div>
             <div class="relative">
-                <input placeholder="Search"
+                <input placeholder="Search by gpa or range"
                     @input="searchInputHandler"
                     @focus="searchShowToggle"
                     v-model="search.terms"
@@ -27,8 +27,17 @@
             </div>
         </div>
     </div>
-    <div class="mt-4">
-        <table-results :initRows="initRows" v-on="$listeners"/>
+
+    <div class="relative mt-4">
+        <div>
+            <table-results :initRows="initRows.data" v-on="$listeners"/>
+        </div>
+        <div class="absolute top-0 w-full h-full pb-8 pl-8 bg-black border bg-opacity-10"
+            @click.self="searchShowToggle(false)"
+            v-if="search.terms != '' && search.result.length > 0 && search.show"
+        >
+            <table-results :initRows="search.result" @edit="clearSearchAndForwardEditEvent($event)" :hideDateFilter="true" class="bg-white"/>
+        </div>
     </div>
 </div>
 </template>
