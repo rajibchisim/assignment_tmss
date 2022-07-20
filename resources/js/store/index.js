@@ -5,6 +5,7 @@ import Auth from './auth'
 import Department from './department'
 import Batch from './batch'
 import Student from './student'
+import Result from './result'
 
 
 Vue.use(Vuex)
@@ -54,6 +55,10 @@ const store = new Vuex.Store({
         student: {
             namespaced: true,
             ...Student
+        },
+        result: {
+            namespaced: true,
+            ...Result
         }
     },
 })

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Result;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class ResultController extends Controller
 {
@@ -16,6 +18,60 @@ class ResultController extends Controller
     {
         //
     }
+
+
+    public function search(Request $request)
+    {
+        $studentId = (int) $request->student_id ? $request->student_id : false;
+        $rawTerms = collect(explode(' ', $request->terms))
+                    ->filter(function($item) {
+                        return $item != '' || $item != null;
+                    })
+                    ->all();
+
+        $numericTerms = [];
+        $alphaTerms = [];
+
+
+        foreach ($rawTerms as $item) {
+            if(is_numeric($item)) {
+                $numericTerms[] = $item;
+            } else {
+                $alphaTerms[] = $item;
+            }
+        }
+
+
+        $max = collect($numericTerms)->max();
+        $min = collect($numericTerms)->min();
+
+        $result = DB::table('results')
+                    ->when($studentId != false, function($query) use($studentId){
+                        $query->where('student_id', '=', $studentId);
+                    })
+                    ->when(count($numericTerms) > 0, function($query) use($max, $min) {
+                        if($max - $min == 0) {
+                            $query->where('gpa', $max);
+                        } else {
+                            $query->whereBetween('gpa', [$min, $max]);
+                        }
+                    })
+                    // ->orWhere('date', 'LIKE', )
+                    // ->orWhere(function($query) use($alphaTerms) {
+                    //     foreach($alphaTerms as $word){
+                    //         $query->where('department_id', 5)->orWhere('name', 'LIKE', '%'.$word.'%');
+                    //     }
+                    // })
+                    ->simplePaginate(10);
+
+
+        return response()->json([
+            'status' => 200,
+            'result' => $result
+        ]);
+
+    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -35,7 +91,30 @@ class ResultController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'student_id' => 'required|exists:students,id',
+            'gpa' => 'required|numeric',
+            'date' => 'required|date'
+        ]);
+
+        if($validator->fails()) {
+            return response()->json([
+                'status' => 422,
+                'errors' => $validator->errors()
+            ]);
+        }
+
+        $validated = $validator->validated();
+
+
+
+
+        $result = Result::create($validated);
+
+        return response()->json([
+            'status' => 200,
+            'result' => $result
+        ]);
     }
 
     /**

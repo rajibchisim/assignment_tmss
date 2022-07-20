@@ -22,7 +22,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="department in departments" :key="department.id" class="hover:bg-gray-100 group">
+          <tr v-for="department in departments" :key="department.id" class="hover:bg-gray-100 group hover:cursor-pointer" @click="$emit('open', department)">
             <th
               class="p-4 px-6 text-xs text-left align-middle border-t-0 border-l-0 border-r-0 whitespace-nowrap"
             >

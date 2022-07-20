@@ -34,7 +34,7 @@
     </div>
     <div class="relative">
         <div>
-            <table-departments v-if="departments" :departments="departments.data"/>
+            <table-departments v-if="departments" :departments="departments.data" v-on="$listeners"/>
             <div
                 class="flex-1 flex-grow w-full max-w-full px-4 my-4 text-right text-gray-500"
             >
@@ -107,15 +107,16 @@ export default {
                     this.departments = res
                 })
             }
+        },
+        fetchInitData() {
+            this.$store.dispatch('department/all')
+            .then(res => {
+                this.departments = res
+            })
         }
     },
     created() {
-        this.$store.dispatch('department/all')
-        .then(res => {
-            this.departments = res
-        })
-
-
+        this.fetchInitData()
     }
 }
 </script>

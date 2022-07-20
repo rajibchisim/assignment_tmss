@@ -1,7 +1,8 @@
 <template>
-  <div class="fixed inset-0 bg-black bg-opacity-25" @click="$emit('close')">
+  <div class="fixed inset-0 bg-black bg-opacity-25" @click="bodyClick">
       <div class="container flex items-center h-full mx-auto">
-          <div @click.stop="clearDropdown" class="w-full max-w-sm mx-auto bg-white rounded-lg shadow-lg md:p-10 lg:max-w-4xl">
+          <div class="relative w-full max-w-sm mx-auto bg-white rounded-lg shadow-lg md:p-10 lg:max-w-4xl">
+            <button-close v-on="$listeners"/>
             <h2 class="text-2xl font-semibold text-center text-gray-700 dark:text-white">{{ modalData.labels.heading }}</h2>
 
             <div class="w-full px-6 py-8 md:px-8">
@@ -13,57 +14,28 @@
                 <form @submit.prevent="validateForm" class="mt-6">
                     <fieldset :disabled="progress ? true : false">
                         <div class="mt-4 text-base text-gray-600">
-                            <label class="block mb-1 font-medium dark:text-gray-200" for="name">Department</label>
-                            <input disabled :value="departmentName" class="block w-full px-4 py-1 bg-white border rounded-md focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300" type="text">
-                        </div>
-                        <div class="mt-4 text-base text-gray-600">
-                            <label class="block mb-1 font-medium dark:text-gray-200">Department 2</label>
+                            <label class="block mb-1 font-medium dark:text-gray-200">Department</label>
                             <input-searchable
+                                :disableEdit="disableDepartment"
+                                :initValue="initDepartment"
+                                searchAction="department/search"
+                                @valueSelected="departmentSelected"
+                                :eBus="eBus"
+                            />
+                        </div>
+
+                        <div class="mt-4 text-base text-gray-600">
+                            <label class="block mb-1 font-medium dark:text-gray-200">Batch</label>
+                            <input-searchable
+                                :disableEdit="disableBatch"
+                                :initValue="initBatch"
                                 searchAction="batch/search"
-                                :queryData="{
-                                    department_id: modalData.parentModel.department.id,
-                                    batch_id: modalData.parentModel.batch.id,
-                                }"/>
+                                :queryData="{ department_id: formData.department_id }"
+                                @valueSelected="batchSelected"
+                                :eBus="eBus"
+                            />
                         </div>
-                        <div class="mt-4">
-                            <label class="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-200" for="batch_id">{{ modalData.labels.input }}</label>
-                            <div class="relative text-sm">
-                                <input id="batch_id"
-                                    v-if="batch == null"
-                                    @input="searchInputHandler"
-                                    @focus="searchShowToggle"
-                                    v-model="search.terms"
-                                    name="batch_id"
-                                    class="block w-full px-4 py-1 text-gray-600 bg-white border rounded-md focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300"
-                                    type="text"
-                                />
-                                <input id="batch_id"
-                                    v-if="batch"
-                                    @input="searchInputHandler"
-                                    @focus="searchShowToggle"
-                                    :value="batch ? `${batch.id} | ${batch.name}` : ''"
-                                    disabled
-                                    name="batch_id"
-                                    class="block w-full px-4 py-1 text-gray-600 bg-white border rounded-md focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300"
-                                    type="text"
-                                />
-                                <button class="absolute text-gray-400 -translate-y-1/2 top-1/2 hover:text-red-400 right-2" v-if="batch || search.result.length" @click.stop="clearBatch">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                </button>
-                                <div class="absolute z-10 w-full">
-                                    <div class="w-full p-4 text-sm bg-white border top-8"
-                                        @click.self="searchShowToggle(false)"
-                                        v-if="batch == null && search.result.length && search.show"
-                                    >
-                                        <div v-for="result in search.result" :key="result.id">
-                                            <button @click.stop="selectBatch($event, result)" class="w-full px-4 py-1 hover:bg-gray-100">{{ result.id + ' | ' + result.name }}</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
                         <div class="relative mt-4">
                             <label class="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-200" for="name">Student full name</label>
                             <input id="name" name="name"  v-model="formData.name" class="block w-full px-4 py-1 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300" type="text">
@@ -97,26 +69,42 @@
 <script>
 import Searchable from '@/mixins/searchable'
 import InputSearchable from '@/components/Forms/inputSearchable'
+import ButtonClose from '@/components/Modals/buttonClose'
 
 export default {
     components: {
-        InputSearchable
+        InputSearchable,
+        ButtonClose
     },
     mixins: [Searchable],
-    props: ['modalData'],
+    props: {
+        modalData: {
+            type: Object,
+            default: null
+        },
+        disableDepartment: {
+            type: Boolean,
+            default: true
+        },
+        disableBatch: {
+            type: Boolean,
+            default: true
+        },
+        transfer: {
+            type: Boolean,
+            default: false
+        }
+    },
     data() {
         return {
-            search: {
-                action: 'batch/search',
-            },
             progress: false,
             errorMessage: null,
-            batch: null,
             formData: {
                 name: '',
                 batch_id: '',
                 department_id: ''
-            }
+            },
+            eBus: new Vue()
         }
     },
     watch: {
@@ -131,9 +119,13 @@ export default {
                 }
 
                 if(this.modalData.parentModel) {
-                    this.search.department_id = this.formData.department_id = this.modalData.parentModel.department.id
-                    this.search.batch_id = this.formData.batch_id =this.modalData.parentModel.batch.id
-                    this.batch = this.modalData.parentModel.batch
+                    if(this.modalData.parentModel.department) {
+                        this.search.department_id = this.formData.department_id = this.modalData.parentModel.department.id
+                    }
+                    if(this.modalData.parentModel.batch) {
+                        this.search.batch_id = this.formData.batch_id =this.modalData.parentModel.batch.id
+                        this.batch = this.modalData.parentModel.batch
+                    }
 
                 }
             }
@@ -146,23 +138,39 @@ export default {
             }
 
             return ''
+        },
+        initDepartment() {
+            try {
+                return this.modalData.parentModel.department
+            } catch (error) {
+                return null
+            }
+        },
+        initBatch() {
+            try {
+                return this.modalData.parentModel.batch
+            } catch (error) {
+                return null
+            }
         }
     },
     methods: {
-        selectBatch(event, batch) {
-            console.log('batch selected:', batch)
-            this.formData.batch_id = batch.id
-            this.search.show = false
-            this.batch = batch
+        bodyClick() {
+            this.eBus.$emit('clear')
         },
-        clearBatch() {
-            this.batch = null
-            this.formData.batch_id = null
-            this.clearSearch()
+        departmentSelected(data = null) {
+            if(data == null) {
+                this.formData.department_id = ''
+            } else {
+                this.formData.department_id = data.id
+            }
         },
-        clearDropdown() {
-            console.log('clicky ')
-            // this.search.show = false
+        batchSelected(data = null) {
+            if(data == null) {
+                this.formData.batch_id = ''
+            } else {
+                this.formData.batch_id = data.id
+            }
         },
         validateForm() {
             this.$validator.validate().then(valid => {
@@ -183,6 +191,7 @@ export default {
             .then(student => {
                 this.$toast.open({ message: 'Success!', type: 'success'})
                 this.progress = false
+                console.log('student store', student)
                 this.$emit('saveSync', student)
             })
             .catch(errors => {
@@ -196,7 +205,8 @@ export default {
         },
         updateModel() {
             this.progress = true
-            this.$store.dispatch('student/update', {
+            const url = this.transfer ? 'student/updateTransfer' : 'student/update'
+            this.$store.dispatch(url, {
                 id: this.modalData.model.id,
                 payload: this.formData
             })

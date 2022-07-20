@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BatchController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\ResultController;
 use App\Http\Controllers\StudentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -36,6 +37,7 @@ Route::group(
 
 ], function() {
     Route::get('/search', [DepartmentController::class, 'search']);
+    Route::post('/store', [DepartmentController::class, 'store']);
     Route::get('/{department}', [DepartmentController::class, 'show']);
     Route::get('/', [DepartmentController::class, 'index']);
 });
@@ -62,10 +64,26 @@ Route::group(
     'prefix' => '/students'
 
 ], function() {
+    Route::patch('/{student}/update-transfer', [StudentController::class, 'updateTransfer']);
     Route::patch('/{student}/update', [StudentController::class, 'update']);
     Route::post('/store', [StudentController::class, 'store']);
     Route::get('/search', [StudentController::class, 'search']);
     Route::get('/{student}', [StudentController::class, 'show']);
     Route::get('/', [StudentController::class, 'index']);
+});
+
+
+
+Route::group(
+[
+    'middleware' => 'auth:api',
+    'prefix' => '/results'
+
+], function() {
+    Route::patch('/{result}/update', [ResultController::class, 'update']);
+    Route::post('/store', [ResultController::class, 'store']);
+    Route::get('/search', [ResultController::class, 'search']);
+    Route::get('/{result}', [ResultController::class, 'show']);
+    Route::get('/', [ResultController::class, 'index']);
 });
 

@@ -5,11 +5,49 @@
         <thead>
           <tr class="text-xs font-semibold text-left uppercase">
             <th class="w-20 px-6 py-3 border border-l-0 border-r-0 border-solid whitespace-nowrap">ID</th>
-            <th class="px-6 py-3 border border-l-0 border-r-0 border-solid whitespace-nowrap hover:bg-gray-100" @click="$emit('sort', { result: 'gpa' })">GPA</th>
-            <th class="px-6 py-3 border border-l-0 border-r-0 border-solid whitespace-nowrap hover:bg-gray-100" @click="$emit('sort', { result: 'date' })">Date</th>
+            <th class="px-6 border border-l-0 border-r-0 border-solid whitespace-nowrap">
+                <button class="inline-flex px-4 py-3 gap-x-2 hover:bg-gray-100" @click="$emit('sort', { result: 'gpa' })">
+                    <span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                        </svg>
+                    </span>
+                    <span>GPA</span>
+                </button>
+            </th>
+            <th class="px-6 border border-l-0 border-r-0 border-solid whitespace-nowrap" >
+                <p class="flex justify-between">
+                    <button class="inline-flex px-4 py-3 gap-x-2 hover:bg-gray-100" @click="$emit('sort', { result: 'date' })">
+                        <span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                            </svg>
+                        </span>
+                        <span>Date</span>
+                    </button>
+                    <span class="flex items-center font-thin gap-x-2">
+                        <input type="checkbox" @change="$emit('toggleRangeFilter', $event)">
+                        <span>
+                            <input type="date" class="inline-block px-2 py-1 border" v-model="range.from" @change="$emit('dateRange', { from: $event.target.value })">
+                        </span>
+                        <span>:</span>
+                        <span>
+                            <input type="date" class="inline-block px-2 py-1 border" v-model="range.to" @change="$emit('dateRange', { to: $event.target.value })">
+                        </span>
+                        <button class="" @click.stop="clearRange">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </span>
+                </p>
+            </th>
           </tr>
         </thead>
         <tbody v-if="initRows">
+            <tr v-if="initRows.data.length == 0">
+                <td colspan="3" class="py-4 text-center text-gray-600 align-middle">No results found.</td>
+            </tr>
           <tr v-for="(row, index) in initRows.data" :key="index" class="text-left hover:bg-gray-100 group">
             <td
               class="p-4 px-6 text-xs border-t-0 border-l-0 border-r-0"
@@ -46,7 +84,23 @@
 
 <script>
 export default {
-    props: ['initRows']
+    props: ['initRows'],
+    data() {
+        return {
+            range: {
+                active: false,
+                to: '',
+                from: ''
+            }
+        }
+    },
+    methods: {
+        clearRange() {
+            this.range.to = ''
+            this.range.from = ''
+            this.$emit('dateRange', 'clear')
+        }
+    }
 }
 </script>
 

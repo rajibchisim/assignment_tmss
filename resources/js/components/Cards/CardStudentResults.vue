@@ -1,5 +1,5 @@
 <template>
-<div class="relative flex flex-col w-full min-w-0 mt-16 mb-6 break-words bg-white rounded-lg shadow-xl">
+<div class="relative flex flex-col w-full min-w-0 mb-6 break-words bg-white rounded-lg shadow-xl">
     <div class="px-4 py-3 mb-0 border-0 rounded-t">
         <div class="flex flex-wrap items-center">
             <div class="relative flex-1 flex-grow w-full max-w-full px-4">
@@ -41,6 +41,20 @@ export default {
         TableResults,
     },
     mixins: [Searchable],
-    props: ['initRows'],
+    props: ['studentId', 'initRows'],
+    data() {
+        return {
+            search: {
+                action: 'result/search',
+            }
+        }
+    },
+    watch: {
+        studentId() {
+            if(this.studentId) {
+                this.search.student_id = this.studentId
+            }
+        }
+    }
 };
 </script>

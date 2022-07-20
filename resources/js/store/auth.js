@@ -56,7 +56,11 @@ export default {
             }
 
             const response = await axios.get('/api/auth/user')
-            console.log(response)
+            console.warn('auth: response .... ',response)
+            if(response.data.status == 401) {
+                // TODO
+            }
+
             if(response.data.status == 204) {
                 commit('set_user', response.data.user, { root: true })
                 return response.data.user

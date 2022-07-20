@@ -1,5 +1,5 @@
 const baseUrl = '/api/departments'
-const { makeQueryString } = require('./common')
+const { makeQueryString, modelCreate } = require('./common')
 
 
 export default {
@@ -33,9 +33,8 @@ export default {
                 return null
             }
         },
-        create({}, payload) {
-            // const response = await axios.post(`${baseUrl}`)
-        },
+        create: ({}, data) => modelCreate(data, baseUrl, 'department'),
+
         update() {
 
         },

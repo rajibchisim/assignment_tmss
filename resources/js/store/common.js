@@ -8,9 +8,15 @@ const makeQueryString = (queryObject) => {
     return queryString
 }
 
-const modelUpdate = ({}, data, baseUrl, responsKey) => {
+const modelUpdate = ({}, data, baseUrl, responsKey, customUrl) => {
     return new Promise(async (resolve, reject) => {
-        const response = await axios.patch(`${baseUrl}/${data.id}/update`, data.payload)
+        let url = ''
+        if(baseUrl === false) {
+            url = customUrl
+        } else {
+            url = `${baseUrl}/${data.id}/update`
+        }
+        const response = await axios.patch(url, data.payload)
         if(response.data.status == 200) {
             resolve(response.data[responsKey])
         } else {
@@ -34,6 +40,36 @@ const modelGet = ({}, data={id: '', queryObject: {}}, baseUrl, responsKey) => {
 
 }
 
+const modelCreate = (data, baseUrl, responsKey, customUrl) => {
+    return new Promise(async (resolve, reject) => {
+        let url = ''
+        if(baseUrl === false) {
+            url = customUrl
+        } else {
+            url = `${baseUrl}/store`
+        }
+        const response = await axios.post(url, data)
+        if(response.data.status == 200) {
+            resolve(response.data[responsKey])
+        } else {
+            reject(response.data.errors)
+        }
+    })
+}
+
+
+const modelSearch = (baseUrl, queryObject) => {
+    return new Promise(async (resolve, reject) => {
+        const queryString = makeQueryString(queryObject)
+        const response = await axios.get(`${baseUrl}/search?${queryString}`)
+        if(response.data.status == 200) {
+            resolve(response.data.result)
+        } else {
+            reject(response.data.errors)
+        }
+    })
+}
+
 
 const mapOrderbyToString = (order) => {
     const orderByString = {}
@@ -44,4 +80,11 @@ const mapOrderbyToString = (order) => {
     return orderByString
 }
 
-export { makeQueryString, modelUpdate, modelGet, mapOrderbyToString }
+export {
+    makeQueryString,
+    modelUpdate,
+    modelGet,
+    modelSearch,
+    mapOrderbyToString,
+    modelCreate
+}

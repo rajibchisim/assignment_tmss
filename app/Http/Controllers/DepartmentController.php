@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class DepartmentController extends Controller
 {
@@ -96,7 +97,25 @@ class DepartmentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string'
+        ]);
+
+        if($validator->fails()) {
+            return response()->json([
+                'status' => 422,
+                'errors' => $validator->errors()
+            ]);
+        }
+
+        $validated = $validator->validated();
+
+        $department = Department::create($validated);
+
+        return response()->json([
+            'status' => 200,
+            'department' => $department
+        ]);
     }
 
     /**
@@ -117,9 +136,9 @@ class DepartmentController extends Controller
 
         if($request->batches) {
             $batches = $department->batches()->withCount('students')->latest()->simplePaginate(10);
+            $department->batches = $batches->toArray();
         }
 
-        $department->batches = $batches->toArray();
         $department->students_count = $summary[0]->students_count;
         $department->batches_count = $summary[0]->batches_count;
 

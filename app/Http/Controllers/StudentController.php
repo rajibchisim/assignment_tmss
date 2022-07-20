@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
+use function PHPUnit\Framework\isEmpty;
+
 class StudentController extends Controller
 {
     /**
@@ -15,15 +17,39 @@ class StudentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $byDepartment = $request->has('byDepartment') ? $request->byDepartment : null;
+        $byBatch = $request->has('byBatch') ? $request->byBatch : null;
+
+        $sortName = $request->has('name') ? ($request->gpa == 'desc' ? 'desc' : 'asc' ) : null;
+        $sortId = $request->has('date') ? ($request->date == 'desc' ? 'desc' : 'asc') : null;
+
+        $students = Student::when($byDepartment, function($query) use($byDepartment){
+                                $query->where('department_id', '=', $byDepartment);
+                            })
+                            ->when($byBatch, function($query) use($byBatch) {
+                                $query->where('batch_id', '=', $byBatch);
+                            })
+                            ->when($sortName, function($query) use($sortName) {
+                                $query->orderBy('name', $sortName);
+                            })
+                            ->when($sortId, function($query) use($sortId) {
+                                $query->orderBy('id', $sortId);
+                            })
+                            ->paginate(10);
+
+
+        return response()->json([
+            'status' => 200,
+            'students' => $students
+        ]);
     }
 
     public function search(Request $request)
     {
-        $departmentId = (int) $request->department_id ? $request->department_id : '*';
-        $batchId = (int) $request->batch_id ? $request->batch_id : '*';
+        $departmentId = (int) $request->department_id ? $request->department_id : null;
+        $batchId = (int) $request->batch_id ? $request->batch_id : null;
 
         $rawTerms = collect(explode(' ', $request->terms))
                     ->filter(function($item) {
@@ -44,8 +70,12 @@ class StudentController extends Controller
 
 
         $result = DB::table('students')
-                    ->where('department_id', '=', $departmentId)
-                    ->where('batch_id', '=', $batchId)
+                    ->when($departmentId, function($query) use($departmentId) {
+                        $query->where('department_id', '=', $departmentId);
+                    })
+                    ->when($batchId, function($query) use($batchId) {
+                        $query->where('batch_id', '=', $batchId);
+                    })
                     ->Where('name', 'LIKE', '%'.$request->terms.'%')
                     ->orWhere(function($query) use($numericTerms){
                         if(count($numericTerms) > 0) {
@@ -132,12 +162,48 @@ class StudentController extends Controller
     {
         $student->load(['department', 'batch']);
 
+        $dateRange = $request->dateRange == 'false' ? false : true;
+        $fromDate = $request->fromDate ? $request->fromDate : NULL;
+        $toDate = $request->toDate ? $request->toDate : NULL;
 
-        $resultSortGpa = $request->gpa ? ($request->gpa == 'desc' ? 'desc' : 'asc' ) : null;
-        $resultSortDate = $request->date ? ($request->date == 'desc' ? 'desc' : 'asc') : null;
+
+        $resultSortGpa = $request->gpa ? ($request->gpa == 'desc' ? 'desc' : 'asc' ) : NULL;
+        $resultSortDate = $request->date ? ($request->date == 'desc' ? 'desc' : 'asc') : NULL;
+
+        /* if($request->results) {
+            $results = DB::table('results')
+                        ->when($fromDate != null, function($query) use($fromDate){
+                            $query->whereDate('date', '=', $fromDate)->orWhereDate('date', '>', $fromDate);
+                        })
+                        ->when($toDate != null, function($query) use($toDate){
+                            $query->whereDate('date', '=', $toDate)->orWhereDate('date', '<', $toDate);
+                        })
+                        ->where('student_id', $student->id)
+                        ->when($resultSortGpa, function($query) use($resultSortGpa){
+                            $query->orderBy('gpa', $resultSortGpa);
+                        })
+                        ->when($resultSortDate, function($query) use($resultSortDate) {
+                            $query->orderBy('date', $resultSortDate);
+                        })
+                        // ->simplePaginate(10)
+                        ->toSql();
+
+            $student->results = $results;
+        } */
+
 
         if($request->results) {
             $results = DB::table('results')
+                        ->where(function($query) use($fromDate, $toDate, $dateRange){
+                            if($dateRange) {
+                                if($fromDate != NULL) {
+                                    $query->whereDate('date', '=', $fromDate)->orWhereDate('date', '>', $fromDate);
+                                }
+                                if($toDate != NULL) {
+                                    $query->whereDate('date', '=', $toDate)->orWhereDate('date', '<', $toDate);
+                                }
+                            }
+                        })
                         ->where('student_id', $student->id)
                         ->when($resultSortGpa, function($query) use($resultSortGpa){
                             $query->orderBy('gpa', $resultSortGpa);
@@ -174,7 +240,7 @@ class StudentController extends Controller
      * @param  \App\Models\Student  $student
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Student $student)
+    public function update(Request $request, Student $student, $transfer = false)
     {
         $validator = Validator::make($request->all(), [
             'department_id' => 'required|numeric|exists:departments,id',
@@ -191,13 +257,15 @@ class StudentController extends Controller
 
         $validated = $validator->validated();
 
-        // check student batch and department matches with request
+        if(!$transfer) {
+            // check student batch and department matches with request
 
-        if($student->department_id != $validated['department_id'] || $student->batch_id != $validated['batch_id']) {
-            return response()->json([
-                'status' => 422,
-                'errors' => 'Data constraint failed.'
-            ]);
+            if($student->department_id != $validated['department_id'] || $student->batch_id != $validated['batch_id']) {
+                return response()->json([
+                    'status' => 422,
+                    'errors' => 'Data constraint failed.'
+                ]);
+            }
         }
 
         $student->name = $validated['name'];
@@ -207,6 +275,11 @@ class StudentController extends Controller
             'status' => 200,
             'student' => $student
         ]);
+    }
+
+    public function updateTransfer(Request $request, Student $student)
+    {
+        $this->update($request, $student, true);
     }
 
     /**
