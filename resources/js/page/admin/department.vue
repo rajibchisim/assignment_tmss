@@ -11,12 +11,9 @@
             </h3>
             <div class="mb-2 text-blueGray-600">University of Computer Science</div>
 
-            <button @click="openDepartmentAddEditModal(null, department)" class="absolute p-2 top-4 right-4 hover:text-gray-600">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                </svg>
-            </button>
+            <link-back-arrow />
 
+            <button-edit-pen @click="openDepartmentAddEditModal(null, department)" />
 
       </div>
       <div class="w-full px-4 text-center">

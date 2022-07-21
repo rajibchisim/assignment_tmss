@@ -95,7 +95,7 @@ export default {
     computed: {
         departmentName() {
             try {
-                return this.modalData.parentModel.name
+                return this.modalData.parentModel.id + ' | ' +this.modalData.parentModel.name
             } catch (error) {
                 return ''
             }

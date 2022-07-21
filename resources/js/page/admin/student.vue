@@ -3,11 +3,11 @@
     <div>
         <div class="relative">
             <card-student-profile :profileData="studentProfile"/>
-            <button @click="openStudentAddEditModal(student)" class="absolute p-2 top-4 right-4 hover:text-gray-600">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                </svg>
-            </button>
+
+            <link-back-arrow />
+
+            <button-edit-pen @click="openStudentAddEditModal(student)" />
+
         </div>
         <div class="mt-8 text-center">
             <div class="px-4 mb-2 text-left">
@@ -83,6 +83,7 @@ import StudentAddEditMixin from '@/mixins/studentAddEditModal'
 
 import ResultAddEdit from '@/components/Modals/ResultAddEdit'
 import ResultAddEditMixin from '@/mixins/resultAddEdit'
+import LinkBack from '../../components/common/linkBack.vue'
 
 export default {
     components: {
