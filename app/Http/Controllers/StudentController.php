@@ -170,38 +170,37 @@ class StudentController extends Controller
         $resultSortGpa = $request->gpa ? ($request->gpa == 'desc' ? 'desc' : 'asc' ) : NULL;
         $resultSortDate = $request->date ? ($request->date == 'desc' ? 'desc' : 'asc') : NULL;
 
-        /* if($request->results) {
-            $results = DB::table('results')
-                        ->when($fromDate != null, function($query) use($fromDate){
-                            $query->whereDate('date', '=', $fromDate)->orWhereDate('date', '>', $fromDate);
-                        })
-                        ->when($toDate != null, function($query) use($toDate){
-                            $query->whereDate('date', '=', $toDate)->orWhereDate('date', '<', $toDate);
-                        })
-                        ->where('student_id', $student->id)
-                        ->when($resultSortGpa, function($query) use($resultSortGpa){
-                            $query->orderBy('gpa', $resultSortGpa);
-                        })
-                        ->when($resultSortDate, function($query) use($resultSortDate) {
-                            $query->orderBy('date', $resultSortDate);
-                        })
-                        // ->simplePaginate(10)
-                        ->toSql();
+        $sql = DB::table('results')
+        ->where(function($query) use($fromDate, $toDate, $dateRange){
+            if($dateRange) {
+                if($toDate != NULL) {
+                    $query->whereDate('date', '<', $toDate)->orWhereDate('date', '=', $toDate);
+                }
+                if($fromDate != NULL) {
+                    $query->whereDate('date', '>', $fromDate)->orWhereDate('date', '=', $fromDate);
+                }
 
-            $student->results = $results;
-        } */
-
+            }
+        })
+        ->where('student_id', $student->id)
+        ->when($resultSortGpa, function($query) use($resultSortGpa){
+            $query->orderBy('gpa', $resultSortGpa);
+        })
+        ->when($resultSortDate, function($query) use($resultSortDate) {
+            $query->orderBy('date', $resultSortDate);
+        })->toSql();
 
         if($request->results) {
             $results = DB::table('results')
                         ->where(function($query) use($fromDate, $toDate, $dateRange){
                             if($dateRange) {
-                                if($fromDate != NULL) {
-                                    $query->whereDate('date', '=', $fromDate)->orWhereDate('date', '>', $fromDate);
-                                }
                                 if($toDate != NULL) {
-                                    $query->whereDate('date', '=', $toDate)->orWhereDate('date', '<', $toDate);
+                                    $query->whereDate('date', '<=', $toDate);
                                 }
+                                if($fromDate != NULL) {
+                                    $query->whereDate('date', '>=', $fromDate);
+                                }
+
                             }
                         })
                         ->where('student_id', $student->id)
@@ -219,6 +218,7 @@ class StudentController extends Controller
         return response()->json([
             'status' => 200,
             'student' => $student,
+            'sql' => $sql
         ]);
     }
 

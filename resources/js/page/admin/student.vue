@@ -65,6 +65,7 @@
             v-if="resultAddEditModalData.show"
             @close="closeResultAddEditModal"
             @saveSync="syncResult"
+            :enableDelete="true"
             @deleteSync="syncResultDelete"
         />
     </div>

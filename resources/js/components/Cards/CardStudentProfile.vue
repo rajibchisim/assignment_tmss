@@ -12,7 +12,7 @@
           {{ profileData.name }}
         </h3>
 
-        <div class="mt-10 mb-2 text-base">
+        <div class="mt-6 mb-2 text-base">
           <p>Department: <router-link :to="{ name: 'department', params: {id:profileData.department_id} }" class="hover:text-gray-800">{{ profileData.department }}</router-link></p>
           <p>Batch: <router-link :to="{ name: 'batch', params: {id:profileData.batch_id} }" class="hover:text-gray-800">{{ profileData.batch }}</router-link></p>
         </div>
