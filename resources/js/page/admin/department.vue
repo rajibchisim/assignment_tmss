@@ -46,14 +46,14 @@
         <div class="flex flex-wrap justify-center">
             <div class="w-full px-4 lg:w-6/12">
                 <div class="px-4 mb-2 text-left">
-                    <button class="inline-flex items-center text-gray-600 hover:text-gray-700" @click="openStudentAddEditModal(null)">
+                    <button class="inline-flex items-center text-gray-600 hover:text-gray-700" @click="prepareStudentAddEditModal(null)">
                         <span>Create Student</span>
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                         </svg>
                     </button>
                 </div>
-                <card-students v-if="students" :initRows="students.data" :parentScope="{ department: this.department.id }" @edit="openStudentAddEditModal"/>
+                <card-students v-if="students" :initRows="students.data" :parentScope="{ department: this.department.id }" @edit="prepareStudentAddEditModal"/>
             </div>
           <div class="w-full px-4 lg:w-6/12">
             <div class="px-4 mb-2 text-left">
@@ -93,6 +93,7 @@
     <DepartmentAddEdit
         :modalData="departmentAddEditModalData"
         v-if="departmentAddEditModalData.show"
+        :enableDelete="true"
         @close="closedepartmentAddEditModal"
         @saveSync="syncDepartment"
         @deleteSync="syncDepartmentDelete"
@@ -153,7 +154,6 @@ export default {
             handler() {
                 if(this.department) {
                     this.batchAddEditModalData.parentModel = { id: this.department.id, name: this.department.name }
-                    this.studentAddEditModalData.parentModel = { id: this.department.id, name: this.department.name }
 
                     this.setupStudentAddEdit({
                         department: { id: this.department.id, name: this.department.name }
@@ -230,6 +230,24 @@ export default {
                 this.total_student -= this.department.batches.data[index].students_count
                 this.department.batches.data.splice(index, 1)
             }
+        },
+
+        async prepareStudentAddEditModal(data) {
+            if(data) {
+                const batch = await this.$store.dispatch('batch/check', {id: data.batch_id})
+                if(batch.id) {
+                    this.updateStudentAddEdit({
+                        batch: {
+                            id: batch.id,
+                            name: batch.name
+                        }
+                    })
+                }
+
+            }
+
+            this.openStudentAddEditModal(data)
+
         },
 
         syncStudent(model) {

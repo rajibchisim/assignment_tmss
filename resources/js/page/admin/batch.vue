@@ -67,6 +67,7 @@
         v-if="batchAddEditModalData.show"
         :modalData="batchAddEditModalData"
         @close="closeBatchAddEditModal"
+        :enableDelete="true"
         @saveSync="syncBatch"
         @deleteSync="syncBatchDelete"
     />

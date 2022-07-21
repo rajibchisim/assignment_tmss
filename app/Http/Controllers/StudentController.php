@@ -257,29 +257,45 @@ class StudentController extends Controller
 
         $validated = $validator->validated();
 
+        $batch = Batch::find($validated['batch_id']);
+        if($batch->department_id != $validated['department_id']) {
+            return response()->json([
+                'status' => 422,
+                'errors' => [
+                    'department_id' => ['Department and Batch are not related.'],
+                    'batch_id' => ['Batch and Department are not related.'],
+                ]
+            ]);
+        }
+
         if(!$transfer) {
             // check student batch and department matches with request
 
             if($student->department_id != $validated['department_id'] || $student->batch_id != $validated['batch_id']) {
                 return response()->json([
                     'status' => 422,
-                    'errors' => 'Data constraint failed.'
+                    'errors' => 'Student transfer not allowed.'
                 ]);
             }
+            $student->name = $validated['name'];
+
+        } else {
+            $student->name = $validated['name'];
+            $student->department_id = $validated['department_id'];
+            $student->batch_id = $validated['batch_id'];
         }
 
-        $student->name = $validated['name'];
         $student->save();
 
         return response()->json([
             'status' => 200,
-            'student' => $student
+            'student' => $student->load(['department', 'batch'])
         ]);
     }
 
     public function updateTransfer(Request $request, Student $student)
     {
-        $this->update($request, $student, true);
+        return $this->update($request, $student, true);
     }
 
     /**

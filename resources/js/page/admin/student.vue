@@ -57,6 +57,7 @@
             @saveSync="syncStudent"
             :disableDepartment="false"
             :disableBatch="false"
+            :enableDelete="true"
             @deleteSync="syncStudentDelete"
         />
         <ResultAddEdit
@@ -155,6 +156,8 @@ export default {
         },
         syncStudent(data) {
             this.student.name = data.name
+            this.$set(this.student, 'department', data.department)
+            this.$set(this.student, 'batch', data.batch)
         },
         syncStudentDelete(data) {
             this.$router.push({ name: 'batch', params: { id: this.student.batch.id } })

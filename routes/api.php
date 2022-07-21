@@ -56,6 +56,7 @@ Route::group(
     Route::delete('/{batch}/delete', [BatchController::class, 'destroy']);
     Route::post('/store', [BatchController::class, 'store']);
     Route::get('/search', [BatchController::class, 'search']);
+    Route::get('/{batch}/check', [BatchController::class, 'check']);
     Route::get('/{batch}', [BatchController::class, 'show']);
     Route::get('/', [BatchController::class, 'index']);
 });

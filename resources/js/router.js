@@ -75,7 +75,7 @@ const router = new VueRouter({
 router.beforeEach(async (to, from, next) => {
     console.warn('From:', from, 'To:', to)
     // prevent signed in user to visit login
-    const user = await store.dispatch('auth/user')
+    const user = await store.dispatch('auth/user', { to,from })
     console.log('router user: ', user)
 
     if(to.matched.some(record => record.meta.guestOnly)){

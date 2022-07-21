@@ -34,7 +34,7 @@ const config = {
     // useConstraintAttrs: true
 };
 
-// Vue.component('confirm-delete', require('@/components/Modals/ConfirmDelete').default)
+Vue.component('login-modal', require('@/components/Modals/LoginModal').default)
 
 Vue.use(VeeValidate, config);
 Vue.prototype.$setErrorsFromResponse = function(errors) {
@@ -73,7 +73,6 @@ Vue.component('FormLogin', require('./components/FormLogin.vue').default)
 window.addEventListener('load', () => {
     const app = new Vue({
         el: '#app',
-        // mixins: [loadingProgressMixin],
         store,
         router
     });

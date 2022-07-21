@@ -48,7 +48,7 @@ export default {
 
             })
         },
-        async user({getters, state, commit}) {
+        async user({getters, state, commit}, payload) {
             // Token not present in store. check in local storage
             if(!state.token) {
                 const localToken = localStorage.getItem('token');
@@ -56,15 +56,20 @@ export default {
             }
 
             const response = await axios.get('/api/auth/user')
-            console.warn('auth: response .... ',response)
-            if(response.data.status == 401) {
-                // TODO
-            }
+            console.warn('auth: payload .... ', payload)
+            console.warn('auth: response .... ', response)
 
             if(response.data.status == 204) {
                 commit('set_user', response.data.user, { root: true })
                 return response.data.user
             }
+
+            if(response.data.status == 401) {
+                state.authTimeout = true
+                // return new Promise()
+            }
+
+
 
             commit('set_token', null, { root: true })
             commit('set_user', null, { root: true })

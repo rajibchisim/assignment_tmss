@@ -44,7 +44,7 @@
  * params [queryData] object, eg { department_id, batch_id } .
  */
 export default {
-    props:['initValue', 'searchAction', 'queryData', 'disableEdit', 'eBus'],
+    props:['initValue', 'searchAction', 'queryData', 'disableEdit', 'eBus', 'inputName', 'inputValidations'],
     data() {
         return {
             batch: null,
@@ -63,7 +63,7 @@ export default {
             handler() {
                 if(this.initValue) {
                     this.batch = this.initValue
-                    this.$emit('valueSelected', this.batch)
+                    // this.$emit('valueSelected', this.batch)
                 }
             }
         }

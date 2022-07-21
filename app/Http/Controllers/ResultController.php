@@ -93,8 +93,11 @@ class ResultController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'student_id' => 'required|exists:students,id',
-            'gpa' => 'required|numeric|max:5|min:0',
+            'gpa' => 'required|numeric|max:5|min:1',
             'date' => 'required|date'
+        ],
+        [
+            'gpa' => 'Maximum value for gpa is 5.'
         ]);
 
         if($validator->fails()) {
@@ -148,7 +151,40 @@ class ResultController extends Controller
      */
     public function update(Request $request, Result $result)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'student_id' => 'required|exists:students,id',
+            'gpa' => 'required|numeric|max:5|min:0',
+            'date' => 'required|date'
+        ],
+        [
+            'gpa.max' => 'Maximum value for gpa is 5',
+            'gpa.numeric' => 'Number only! Eg. use 0 for F'
+        ]);
+
+        if($validator->fails()) {
+            return response()->json([
+                'status' => 422,
+                'errors' => $validator->errors()
+            ]);
+        }
+
+        $validated = $validator->validated();
+
+        if($result->student_id != $validated['student_id']) {
+            return response()->json([
+                'status' => 422,
+                'errors' => 'Not permitted. Data constranit failed.'
+            ]);
+        }
+
+        $result->gpa = $validated['gpa'];
+        $result->date = $validated['date'];
+        $result->save();
+
+        return response()->json([
+            'status' => 200,
+            'result' => $result
+        ]);
     }
 
     /**

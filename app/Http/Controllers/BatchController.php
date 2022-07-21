@@ -198,6 +198,17 @@ class BatchController extends Controller
         ]);
     }
 
+
+    public function check(Request $request, Batch $batch)
+    {
+        // TOTO Handle not found error.
+        // Suggestion: Make the exception frontend handlable. send execption as json response
+        return response()->json([
+            'status' => 200,
+            'batch' => $batch
+        ]);
+    }
+
     /**
      * Remove the specified resource from storage.
      *

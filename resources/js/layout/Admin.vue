@@ -10,11 +10,12 @@
           </div>
         </div>
     </div>
+    <login-modal v-if="$store.state.authTimeout"/>
   </div>
 </template>
 <script>
-import AdminNavbar from "@/components/Navbars/AdminNavbar.vue";
-import FooterAdmin from "@/components/Footers/FooterAdmin.vue";
+import AdminNavbar from "@/components/Navbars/AdminNavbar.vue"
+import FooterAdmin from "@/components/Footers/FooterAdmin.vue"
 export default {
   name: "admin-layout",
   components: {

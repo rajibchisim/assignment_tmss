@@ -19,6 +19,11 @@ export default {
         setupStudentAddEdit(parentData = { department: {}, batch: {} }) {
             this.studentAddEditModalData.parentModel = { ...parentData }
         },
+        updateStudentAddEdit(parentData = { department: {}, batch: {} }) {
+            Object.keys(parentData).forEach(key => {
+                this.studentAddEditModalData.parentModel[key] = parentData[key]
+            })
+        },
         openStudentAddEditModal(model = null) {
             console.log('openStudentAddEditModal')
             if(model) {

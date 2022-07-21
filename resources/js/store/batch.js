@@ -39,6 +39,16 @@ export default {
                 }
             })
         },
+        check({}, params) {
+            return new Promise(async (resolve, reject) => {
+                const response = await axios.get(`${baseUrl}/${params.id}/check`)
+                if(response.data.status == 200) {
+                    resolve(response.data.batch)
+                } else {
+                    reject(response.data.errors)
+                }
+            })
+        },
         update: ({}, payload) => modelUpdate({}, payload, baseUrl, 'batch'),
         delete:({}, payload) => modelDelete(payload, baseUrl)
     }

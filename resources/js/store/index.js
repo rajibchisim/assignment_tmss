@@ -16,7 +16,8 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
     state: {
         token: null,
-        user: null
+        user: null,
+        authTimeout: false,
     },
     mutations: {
         set_token(state, token) {

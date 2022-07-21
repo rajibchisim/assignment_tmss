@@ -3,8 +3,10 @@
       <div class="container flex items-center h-full mx-auto">
           <div class="relative w-full max-w-sm mx-auto bg-white rounded-lg shadow-lg md:p-10 lg:max-w-4xl">
             <!-- DELETE PROMPT -->
-            <confirm-delete @confirm="confirm_delete_model" @cancel="cancel_delete_modal" v-if="show_delete_model_modal" class="absolute inset-0 z-20"/>
-            <ButtonDelete @prompt="prompt_delete_modal" class="absolute"/>
+            <div v-if="enableDelete">
+                <confirm-delete @confirm="confirm_delete_model" @cancel="cancel_delete_modal" v-if="show_delete_model_modal" class="absolute inset-0 z-20"/>
+                <ButtonDelete @prompt="prompt_delete_modal" class="absolute"/>
+            </div>
             <!-- DELETE PROMPT -->
 
             <button-close v-on="$listeners"/>
@@ -18,7 +20,7 @@
                 </div>
                 <form @submit.prevent="validateForm" class="mt-6">
                     <fieldset :disabled="progress ? true : false">
-                        <div class="mt-4 text-base text-gray-600">
+                        <div class="relative mt-4 text-base text-gray-600">
                             <label class="block mb-1 font-medium dark:text-gray-200">Department</label>
                             <input-searchable
                                 :disableEdit="disableDepartment"
@@ -27,9 +29,11 @@
                                 @valueSelected="departmentSelected"
                                 :eBus="eBus"
                             />
+                            <input class="hidden" v-validate="'required'" name="department_id" v-model="formData.department_id">
+                            <span class="absolute right-0 text-xs text-red-500 -bottom-4">{{ errors.first('department_id') }}</span>
                         </div>
 
-                        <div class="mt-4 text-base text-gray-600">
+                        <div class="relative mt-4 text-base text-gray-600">
                             <label class="block mb-1 font-medium dark:text-gray-200">Batch</label>
                             <input-searchable
                                 :disableEdit="disableBatch"
@@ -39,6 +43,8 @@
                                 @valueSelected="batchSelected"
                                 :eBus="eBus"
                             />
+                            <input class="hidden" v-validate="'required'" name="batch_id" v-model="formData.batch_id">
+                            <span class="absolute right-0 text-xs text-red-500 -bottom-4">{{ errors.first('batch_id') }}</span>
                         </div>
 
                         <div class="relative mt-4">
@@ -100,6 +106,10 @@ export default {
             default: true
         },
         transfer: {
+            type: Boolean,
+            default: false
+        },
+        enableDelete: {
             type: Boolean,
             default: false
         }
@@ -173,6 +183,7 @@ export default {
                 this.formData.department_id = ''
             } else {
                 this.formData.department_id = data.id
+                this.checkBatchBelongsToDepartment()
             }
         },
         batchSelected(data = null) {
@@ -182,11 +193,23 @@ export default {
                 this.formData.batch_id = data.id
             }
         },
+        checkBatchBelongsToDepartment() {
+            this.$store.dispatch('batch/check', {
+                id: this.formData.batch_id
+            })
+            .then(batch=>{
+                if(batch.department_id != this.formData.department_id) {
+                    console.log('Batch data constranit failed')
+                    this.$setErrorsFromResponse({ batch_id: ['Not related to Department. Reselect Batch.'] })
+                }
+            })
+        },
         validateForm() {
             this.$validator.validate().then(valid => {
                 if(!valid) {
                     console.log('Form invalid')
                 } else {
+                    console.log('Form Passed')
                     this.modalData.model ? this.updateModel() : this.storeModel()
                 }
             })
@@ -222,6 +245,7 @@ export default {
             })
             .then(student => {
                 this.$toast.open({ message: 'Success!', type: 'success'})
+                console.log('student updated:', student)
                 this.progress = false
                 this.$emit('saveSync', student)
             })

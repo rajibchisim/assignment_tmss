@@ -5,7 +5,7 @@
         <div class="bg-cover lg:block lg:w-1/2" style="background-image:url('/images/hope-house-press-leather-diary-studio-IOzk8YKDhYg-unsplash.jpg')"></div>
 
         <div class="w-full px-6 py-8 md:px-8 lg:w-1/2">
-            <h2 class="text-2xl font-semibold text-center text-gray-700 dark:text-white">TMSS Student Portal</h2>
+            <h2 class="text-2xl font-semibold text-center text-gray-700 dark:text-white">Student Portal</h2>
 
             <p class="text-xl text-center text-gray-600 dark:text-gray-200">Welcome back!</p>
 
@@ -92,21 +92,6 @@ export default {
                     this.errorMessage = errorMessage
                     this.progress = false
                 })
-        },
-        save() {
-            axios.get('/sanctum/csrf-cookie').then(response => {
-                if(response.status == 204) {
-                    return;
-                } else {
-                    throw('something went wrong')
-                }
-
-            }).then(()=> {
-                axios.post('/departments', this.department)
-                    .then(res => {
-                        console.log(res)
-                    })
-            })
         },
     }
 }

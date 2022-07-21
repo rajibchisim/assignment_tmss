@@ -3,33 +3,45 @@
       <div class="container flex items-center h-full mx-auto">
           <div class="relative w-full max-w-sm mx-auto bg-white rounded-lg shadow-lg md:p-10 lg:max-w-4xl">
             <!-- DELETE PROMPT -->
-            <confirm-delete @confirm="confirm_delete_model" @cancel="cancel_delete_modal" v-if="show_delete_model_modal" class="absolute inset-0 z-20"/>
-            <ButtonDelete @prompt="prompt_delete_modal" class="absolute"/>
+            <div v-if="enableDelete">
+                <confirm-delete @confirm="confirm_delete_model" @cancel="cancel_delete_modal" v-if="show_delete_model_modal" class="absolute inset-0 z-20"/>
+                <ButtonDelete @prompt="prompt_delete_modal" class="absolute"/>
+            </div>
             <!-- DELETE PROMPT -->
             <button-close @close="$emit('close')"/>
-            <h2 class="text-2xl font-semibold text-center text-gray-700 dark:text-white">{{ modalData.labels.heading }}</h2>
+            <h2 class="text-2xl font-semibold text-center text-gray-700">{{ modalData.labels.heading }}</h2>
 
             <div class="w-full px-6 py-8 md:px-8">
                 <div class="flex items-center justify-between mt-4">
-                    <span class="w-1/5 border-b dark:border-gray-600 lg:w-1/4"></span>
-                    <p class="text-xs text-center text-gray-500 uppercase dark:text-gray-400">{{ modalData.labels.subheading }}</p>
-                    <span class="w-1/5 border-b dark:border-gray-400 lg:w-1/4"></span>
+                    <span class="w-1/5 border-b lg:w-1/4"></span>
+                    <p class="text-xs text-center text-gray-500 uppercase">{{ modalData.labels.subheading }}</p>
+                    <span class="w-1/5 border-b lg:w-1/4"></span>
                 </div>
                 <form @submit.prevent="validateForm" class="mt-6">
                     <fieldset :disabled="progress ? true : false">
                         <div class="relative mt-4">
-                            <label class="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-200" for="gpa">GPA</label>
-                            <input id="gpa" name="gpa"  v-model="formData.gpa"  class="block w-full px-4 py-1 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300" type="text">
+                            <label class="block mb-1 text-sm font-medium text-gray-600" for="gpa">GPA</label>
+                            <input class="block w-full px-4 py-1 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300"
+                                id="gpa"
+                                name="gpa"
+                                v-model="formData.gpa"
+                                type="decimal"
+                            >
                             <span class="absolute right-0 text-xs text-red-500 -bottom-4">{{ errors.first('gpa') }}</span>
                         </div>
-                        <!-- v-validate="'required'" v-validate="'required'"-->
+                        <!-- v-validate="'required'" -->
                         <div class="flex items-center justify-center h-4 mt-2">
                             <p v-if="errorMessage"  class="text-xs text-center text-red-500">{{ errorMessage }}</p>
                         </div>
 
                         <div class="relative mt-4">
-                            <label class="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-200" for="date">Date</label>
-                            <input id="date" name="date"   v-model="formData.date" class="block w-full px-4 py-1 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300" type="date">
+                            <label class="block mb-1 text-sm font-medium text-gray-600" for="date">Date</label>
+                            <input  class="block w-full px-4 py-1 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300"
+                                id="date"
+                                name="date"
+                                v-model="formData.date"
+                                type="date"
+                            >
                             <span class="absolute right-0 text-xs text-red-500 -bottom-4">{{ errors.first('date') }}</span>
                         </div>
                         <!-- v-validate="'required'" v-validate="'required'"-->
@@ -78,6 +90,10 @@ export default {
             type: Object,
             default: null
         },
+        enableDelete: {
+            type: Boolean,
+            default: false
+        }
     },
     data() {
         return {
@@ -158,6 +174,8 @@ export default {
             .then(result => {
                 this.$toast.open({ message: 'Success!', type: 'success'})
                 this.progress = false
+                this.formData.gpa = ''
+                this.formData.date = ''
                 this.$emit('saveSync', result)
             })
             .catch(errors => {
@@ -180,6 +198,7 @@ export default {
                 this.$toast.open({ message: 'Success!', type: 'success'})
                 this.progress = false
                 this.$emit('saveSync', result)
+                this.$emit('close')
             })
             .catch(errors => {
                 this.progress = false
