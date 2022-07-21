@@ -9,7 +9,7 @@
                 <div class="flex items-center justify-between mt-4">
                     <span class="w-1/5 border-b lg:w-1/4"></span>
 
-                    <p class="text-xs text-center text-gray-500 uppercase">Enter your credincials</p>
+                    <p class="text-xs text-center text-gray-500 uppercase">Enter credincials to continue</p>
 
                     <span class="w-1/5 border-b lg:w-1/4"></span>
                 </div>
@@ -84,7 +84,7 @@ export default {
             this.$store.dispatch('auth/login', this.formData)
                 .then(res => {
                     this.progress = false
-                    this.$router.refresh()
+                    this.$router.go()
                 })
                 .catch(errorMessage => {
                     this.errorMessage = errorMessage

@@ -31,8 +31,6 @@ const routes = [
         component: AdminLayout,
         children: [
         {
-            // UserProfile will be rendered inside User's <router-view>
-            // when /user/:id/profile is matched
                 path: '',
                 name: 'home',
                 component: DashboardPage,
@@ -53,7 +51,6 @@ const routes = [
                 name: 'student'
             },
         ],
-        // component: () => import('@/page/admin/Dashboard.vue'),
         meta: {
             requiresAuth: true
         }
@@ -73,10 +70,8 @@ const router = new VueRouter({
 
 
 router.beforeEach(async (to, from, next) => {
-    console.warn('From:', from, 'To:', to)
     // prevent signed in user to visit login
-    const user = await store.dispatch('auth/user', { to,from })
-    console.log('router user: ', user)
+    const user = await store.dispatch('auth/user')
 
     if(to.matched.some(record => record.meta.guestOnly)){
         if(user) next({ name: 'home' }) // redirect to home
@@ -85,26 +80,20 @@ router.beforeEach(async (to, from, next) => {
 
     // prevent unauthorized user to visit
     if(to.matched.some(record => record.meta.requiresAuth)){
+
+        // Authenticated. allow access
         if(user){
             next()
-            // if(to.matched.some(record => record.meta.isAdmin)) {
-            //     if(store.state.isAdmin) {
-            //         next()
-            //     } else {
-            //         next({ name: 'notifications' })
-            //     }
 
-            // } else {
-            //     next()
+        }
 
-            // }
-        } else {
-            next({
-                name: 'login',
-                // query: {
-                //     redirect: to.fullPath
-                // }
-            })
+
+        // Unauthenticated.
+        else {
+            console.warn('login intent:', to.fullPath)
+            store.commit('auth/loginintent', to)
+            next({ name: 'login' })
+
         }
 
     }

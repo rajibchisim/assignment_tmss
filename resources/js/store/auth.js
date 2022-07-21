@@ -1,4 +1,18 @@
 export default {
+    state: {
+        loginintent: null,
+    },
+    mutations: {
+        loginintent(state, to = null) {
+            state.loginintent = to
+        },
+    },
+    getters: {
+        loginintent(state) {
+            if(!state.loginintent) return { name: 'home' }
+            return { path: state.loginintent.fullPath }
+        }
+    },
     actions: {
         login({commit}, data) {
             return new Promise((resolve, reject) => {
@@ -48,7 +62,7 @@ export default {
 
             })
         },
-        async user({getters, state, commit}, payload) {
+        async user({ state, commit }) {
             // Token not present in store. check in local storage
             if(!state.token) {
                 const localToken = localStorage.getItem('token');
@@ -56,21 +70,13 @@ export default {
             }
 
             const response = await axios.get('/api/auth/user')
-            console.warn('auth: payload .... ', payload)
-            console.warn('auth: response .... ', response)
 
             if(response.data.status == 204) {
                 commit('set_user', response.data.user, { root: true })
                 return response.data.user
             }
 
-            if(response.data.status == 401) {
-                state.authTimeout = true
-                // return new Promise()
-            }
-
-
-
+            // Unauthenticated. Clear auth data
             commit('set_token', null, { root: true })
             commit('set_user', null, { root: true })
             return null
