@@ -36,6 +36,7 @@ const config = {
 
 Vue.component('login-modal', require('@/components/Modals/LoginModal').default)
 Vue.component('link-back-arrow', require('@/components/common/linkBack').default)
+Vue.component('link-back-arrow-url', require('@/components/common/linkBackUrl').default)
 Vue.component('button-edit-pen', require('@/components/common/buttonEdit').default)
 
 Vue.use(VeeValidate, config);

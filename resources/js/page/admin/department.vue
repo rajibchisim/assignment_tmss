@@ -11,7 +11,7 @@
             </h3>
             <div class="mb-2 text-blueGray-600">University of Computer Science</div>
 
-            <link-back-arrow />
+            <link-back-arrow-url :route="{ name: 'home' }" />
 
             <button-edit-pen @click="openDepartmentAddEditModal(null, department)" />
 

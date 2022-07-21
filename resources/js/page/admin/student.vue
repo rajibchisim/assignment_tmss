@@ -4,7 +4,7 @@
         <div class="relative">
             <card-student-profile :profileData="studentProfile"/>
 
-            <link-back-arrow />
+            <link-back-arrow-url :route="{ name: 'batch', params: {id: student.batch.id} }" />
 
             <button-edit-pen @click="openStudentAddEditModal(student)" />
 

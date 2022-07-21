@@ -19,7 +19,7 @@
             University of Computer Science
             </div>
 
-            <link-back-arrow/>
+            <link-back-arrow-url :route="{ name: 'department', params: { id: batch.department.id } }"/>
 
             <button-edit-pen @click="openBatchAddEditModal" />
 
