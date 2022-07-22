@@ -10,7 +10,7 @@
           </div>
         </div>
     </div>
-    <!-- <login-modal v-if=""/> -->
+    <login-modal v-if="$store.getters['auth/timeout']"/>
   </div>
 </template>
 <script>

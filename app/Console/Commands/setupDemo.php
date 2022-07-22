@@ -41,6 +41,10 @@ class setupDemo extends Command
      */
     public function handle()
     {
+        $this->call('key:generate');
+        $this->call('jwt:secret');
+        $this->call('jwt:generate-certs');
+
         $this->call('migrate:fresh');
 
         $departments = [

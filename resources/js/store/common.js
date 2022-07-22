@@ -1,3 +1,5 @@
+import store from './index'
+
 const makeQueryString = (queryObject) => {
     if(!queryObject) return ''
     let queryString = ''
@@ -19,9 +21,28 @@ const modelUpdate = ({}, data, baseUrl, responsKey, customUrl) => {
         const response = await axios.patch(url, data.payload)
         if(response.data.status == 200) {
             resolve(response.data[responsKey])
-        } else {
-            reject(response.data.errors)
         }
+
+        checkAuthResponse(response) ? reject('') : reject(response.data.errors)
+    })
+}
+
+
+const modelIndex = (
+    data = { query: {} },
+    baseUrl,
+    responsKey
+) => {
+    return new Promise(async (resolve, reject) => {
+        const queryString = makeQueryString(data.query)
+        const response = await axios.get(`${baseUrl}?${queryString}`)
+
+        if(response.data.status == 200) {
+            resolve(response.data[responsKey])
+        }
+
+        checkAuthResponse(response) ? reject('') : reject(response.data.errors)
+
     })
 }
 
@@ -33,9 +54,9 @@ const modelGet = ({}, data={id: '', queryObject: {}}, baseUrl, responsKey) => {
 
         if(response.data.status == 200) {
             resolve(response.data[responsKey])
-        } else {
-            reject(response.data.errors)
         }
+
+        checkAuthResponse(response) ? reject('') : reject(response.data.errors)
     })
 
 }
@@ -51,9 +72,9 @@ const modelCreate = (data, baseUrl, responsKey, customUrl) => {
         const response = await axios.post(url, data)
         if(response.data.status == 200) {
             resolve(response.data[responsKey])
-        } else {
-            reject(response.data.errors)
         }
+
+        checkAuthResponse(response) ? reject('') : reject(response.data.errors)
     })
 }
 
@@ -64,9 +85,9 @@ const modelDelete = (data={id: ''}, baseUrl, responsKey) => {
 
         if(response.data.status == 200) {
             resolve(response.data[responsKey])
-        } else {
-            reject(response.data.errors)
         }
+
+        checkAuthResponse(response) ? reject('') : reject(response.data.errors)
     })
 
 }
@@ -78,9 +99,9 @@ const modelSearch = (baseUrl, queryObject) => {
         const response = await axios.get(`${baseUrl}/search?${queryString}`)
         if(response.data.status == 200) {
             resolve(response.data.result)
-        } else {
-            reject(response.data.errors)
         }
+
+        checkAuthResponse(response) ? reject('') : reject(response.data.errors)
     })
 }
 
@@ -94,6 +115,13 @@ const mapOrderbyToString = (order) => {
     return orderByString
 }
 
+
+const checkAuthResponse = (response) => {
+    if(response.data.status == 401) {
+        store.commit('auth/timeout')
+    }
+}
+
 export {
     makeQueryString,
     modelUpdate,
@@ -101,5 +129,7 @@ export {
     modelSearch,
     mapOrderbyToString,
     modelCreate,
-    modelDelete
+    modelDelete,
+    modelIndex,
+    checkAuthResponse
 }

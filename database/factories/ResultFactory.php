@@ -15,12 +15,15 @@ class ResultFactory extends Factory
      */
     public function definition()
     {
+        $min = 2;
+        $max = 16;
+        $dateOffset = random_int($min, $max);
         return [
             'student_id' => function() {
                 return Student::factory()->create()->id;
             },
             'gpa' => $this->faker->randomFloat(1, 2, 5),
-            'date' => Carbon::now()->format('Y-m-d')
+            'date' => Carbon::now()->subDay($max/2)->addDay($dateOffset)->format('Y-m-d')
         ];
     }
 }

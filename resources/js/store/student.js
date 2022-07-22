@@ -1,28 +1,19 @@
 const baseUrl = '/api/students'
-const { makeQueryString, modelUpdate, modelGet, modelSearch, modelCreate, modelDelete } = require('./common')
+const responseKey = 'student'
+const { makeQueryString, modelUpdate, modelGet, modelSearch, modelCreate, modelDelete, modelIndex } = require('./common')
 
 
 export default {
     actions: {
-        async all({}, queryObject = {}) {
-            const queryString = makeQueryString(queryObject)
-            const response = await axios.get(`${baseUrl}?${queryString}`)
-
-
-            if(response.data.status == 200) {
-                return response.data.students
-            } else {
-                return null
-            }
-        },
+        all: ({}, queryObject = {}) => modelIndex({query: queryObject}, baseUrl, 'students'),
 
         search: ({}, queryObject) => modelSearch(baseUrl, queryObject),
 
-        get: ({}, data) => modelGet({}, data, baseUrl, 'student'),
+        get: ({}, data) => modelGet({}, data, baseUrl, responseKey),
 
-        create: ({}, payload) => modelCreate(payload, baseUrl, 'student'),
-        update: ({}, payload) => modelUpdate({}, payload, baseUrl, 'student'),
-        updateTransfer: ({}, payload) => modelUpdate({}, payload, false, 'student', `/api/students/${payload.id}/update-transfer`),
+        create: ({}, payload) => modelCreate(payload, baseUrl, responseKey),
+        update: ({}, payload) => modelUpdate({}, payload, baseUrl, responseKey),
+        updateTransfer: ({}, payload) => modelUpdate({}, payload, false, responseKey, `/api/students/${payload.id}/update-transfer`),
         delete:({}, payload) => modelDelete(payload, baseUrl)
     }
 }

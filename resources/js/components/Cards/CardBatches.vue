@@ -69,12 +69,6 @@ export default {
         departmentId: {
             immediate: true,
             handler(val) {
-                /* if(val) {
-                    this.$store.dispatch('batch/all', { department: this.departmentId })
-                    .then(res => {
-                        this.departments = res.data
-                    })
-                } */
                 console.log('card batch department id:', this.departmentId)
                 this.search.department_id = this.departmentId.id
             }

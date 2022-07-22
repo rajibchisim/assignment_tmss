@@ -4,7 +4,7 @@
     <div class="container flex items-center h-screen mx-auto">
         <div class="flex flex-grow max-w-sm mx-auto overflow-hidden bg-white rounded-lg shadow-lg lg:max-w-xl">
             <div class="w-full px-6 py-8 md:px-8">
-                <p class="mt-8 text-xl text-center text-gray-600">Welcome back!</p>
+                <p class="mt-8 text-xl text-center text-gray-600">Login timeout!</p>
 
                 <div class="flex items-center justify-between mt-4">
                     <span class="w-1/5 border-b lg:w-1/4"></span>
@@ -84,7 +84,7 @@ export default {
             this.$store.dispatch('auth/login', this.formData)
                 .then(res => {
                     this.progress = false
-                    this.$router.go()
+                    this.$store.commit('auth/timeout', false)
                 })
                 .catch(errorMessage => {
                     this.errorMessage = errorMessage

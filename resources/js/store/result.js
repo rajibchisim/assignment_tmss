@@ -1,10 +1,10 @@
 const baseUrl = '/api/results'
-const { makeQueryString, modelUpdate, modelGet, modelSearch, modelDelete } = require('./common')
+const { makeQueryString, modelUpdate, modelGet, modelSearch, modelDelete, modelCreate } = require('./common')
 
 
 export default {
     actions: {
-        async all({}, queryObject = {}) {
+        /* async all({}, queryObject = {}) {
             const queryString = makeQueryString(queryObject)
             const response = await axios.get(`${baseUrl}?${queryString}`)
 
@@ -15,22 +15,13 @@ export default {
             } else {
                 return null
             }
-        },
+        }, */
 
         search: ({}, queryObject) => modelSearch(baseUrl, queryObject),
 
         get: ({}, data) => modelGet({}, data, baseUrl, 'result'),
 
-        create({}, payload) {
-            return new Promise(async (resolve, reject) => {
-                const response = await axios.post(`${baseUrl}/store`, payload)
-                if(response.data.status == 200) {
-                    resolve(response.data.result)
-                } else {
-                    reject(response.data.errors)
-                }
-            })
-        },
+        create: ({}, payload) =>  modelCreate(payload, baseUrl, 'result'),
         update: ({}, payload) => modelUpdate({}, payload, baseUrl, 'result'),
         delete:({}, payload) => modelDelete(payload, baseUrl)
     }

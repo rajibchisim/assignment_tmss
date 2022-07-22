@@ -186,12 +186,6 @@ export default {
             if(dir == 0 && this.department.batches.prev_page_url) {
                 // previous
                 console.log('backward')
-                /* this.$store.dispatch('batch/all', {
-                    page: this.department.batches.current_page - 1
-                })
-                .then(res => {
-                    this.department.batches = res
-                }) */
 
                 this.$store.dispatch('department/get', {
                     id: this.department.id,
@@ -210,12 +204,7 @@ export default {
             } else if(dir == 1 && this.department.batches.next_page_url){
                 // forward
                 console.log('forward')
-                /* this.$store.dispatch('batch/all', {
-                    page: this.department.batches.current_page + 1
-                })
-                .then(res => {
-                    this.department.batches = res
-                }) */
+
                 this.$store.dispatch('department/get', {
                     id: this.department.id,
                     queryObject: {

@@ -1,16 +1,23 @@
 export default {
     state: {
         loginintent: null,
+        timeout: false,
     },
     mutations: {
         loginintent(state, to = null) {
             state.loginintent = to
         },
+        timeout(state, status = true) {
+            state.timeout = status
+        }
     },
     getters: {
         loginintent(state) {
             if(!state.loginintent) return { name: 'home' }
             return { path: state.loginintent.fullPath }
+        },
+        timeout(state) {
+            return state.timeout
         }
     },
     actions: {
