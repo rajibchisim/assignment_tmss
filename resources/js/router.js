@@ -11,6 +11,7 @@ import AdminLayout from '@/layout/Admin.vue'
 import DepartmentPage from '@/page/admin/department.vue'
 import BatchPage from '@/page/admin/batch.vue'
 import StudentPage from '@/page/admin/student.vue'
+import NotFound from '@/page/admin/notFound.vue'
 
 const routes = [
     {   path: '/login',
@@ -30,7 +31,7 @@ const routes = [
     {   path: '/',
         component: AdminLayout,
         children: [
-        {
+            {
                 path: '',
                 name: 'home',
                 component: DashboardPage,
@@ -50,6 +51,10 @@ const routes = [
                 component: StudentPage,
                 name: 'student'
             },
+            {
+                path: '*',
+                component: NotFound,
+            }
         ],
         meta: {
             requiresAuth: true
