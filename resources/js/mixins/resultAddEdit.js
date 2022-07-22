@@ -1,4 +1,9 @@
+import ResultAddEdit from '@/components/Modals/ResultAddEdit'
+
 export default {
+    components: {
+        ResultAddEdit
+    },
     data() {
         return {
             resultAddEditModalData: {

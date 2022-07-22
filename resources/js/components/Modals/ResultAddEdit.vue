@@ -3,7 +3,7 @@
       <div class="container flex items-center h-full mx-auto">
           <div class="relative w-full max-w-sm mx-auto bg-white rounded-lg shadow-lg md:p-10 lg:max-w-4xl">
             <!-- DELETE PROMPT -->
-            <div v-if="enableDelete">
+            <div v-if="modalData.model && enableDelete">
                 <confirm-delete @confirm="confirm_delete_model" @cancel="cancel_delete_modal" v-if="show_delete_model_modal" class="absolute inset-0 z-20"/>
                 <ButtonDelete @prompt="prompt_delete_modal" class="absolute"/>
             </div>
@@ -177,6 +177,7 @@ export default {
                 this.formData.gpa = ''
                 this.formData.date = ''
                 this.$emit('saveSync', result)
+                this.$emit('close')
             })
             .catch(errors => {
                 this.progress = false

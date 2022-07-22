@@ -106,7 +106,12 @@ export default {
         },
         searchRows(terms) {
             this.search.progress = true
-            this.$store.dispatch(this.searchAction, { terms, ...this.queryData })
+            this.$store.dispatch(this.searchAction, {
+                query: {
+                    terms,
+                    ...this.queryData
+                }
+            })
             .then((res)=>{
                 this.search.progress = false
                 this.search.result = res.data

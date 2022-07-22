@@ -81,7 +81,7 @@ import CardStudentResults from '@/components/Cards/CardStudentResults'
 import StudentAddEdit from '@/components/Modals/StudentAddEdit_v2'
 import StudentAddEditMixin from '@/mixins/studentAddEditModal'
 
-import ResultAddEdit from '@/components/Modals/ResultAddEdit'
+
 import ResultAddEditMixin from '@/mixins/resultAddEdit'
 import LinkBack from '../../components/common/linkBack.vue'
 
@@ -90,7 +90,6 @@ export default {
         CardStudentProfile,
         CardStudentResults,
         StudentAddEdit,
-        ResultAddEdit
     },
     mixins: [
         ForwardPagination,
@@ -111,16 +110,15 @@ export default {
         }
     },
     watch: {
-        student(val) {
-            if(!val) return
-
-            this.setupStudentAddEdit({
-                department: this.student.department,
-                batch: this.student.batch
-            })
-            this.setupResultAddEdit({
-                student:{ id: this.student.id, name: this.student.name }
-            })
+        student: {
+            immediate:true,
+            handler() {
+                if(!this.student) return
+                    this.setupStudentAddEdit({
+                        department: this.student.department,
+                        batch: this.student.batch,
+                    })
+            }
         }
     },
     computed: {
