@@ -7,7 +7,7 @@ export default {
     actions: {
         all: ({}, queryObject = {}) => modelIndex({query: queryObject}, baseUrl, 'students'),
 
-        search: ({}, queryObject) => modelSearch(baseUrl, queryObject),
+        search: ({}, data) => modelSearch(data, baseUrl),
 
         get: ({}, data) => modelGet({}, data, baseUrl, responseKey),
 

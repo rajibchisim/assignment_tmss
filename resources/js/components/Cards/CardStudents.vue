@@ -72,10 +72,10 @@ export default {
                 console.log(this.parentScope)
                 if(this.parentScope) {
                     if(this.parentScope.department) {
-                        this.search.department_id = this.parentScope.department
+                        this.searchAddScopes({ department_id: this.parentScope.department})
                     }
                     if(this.parentScope.batch) {
-                        this.search.batch_id = this.parentScope.batch
+                        this.searchAddScopes({ batch_id: this.parentScope.batch })
                     }
                 }
             }

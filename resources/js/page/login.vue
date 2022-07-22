@@ -86,6 +86,7 @@ export default {
             this.$store.dispatch('auth/login', this.formData)
                 .then(res => {
                     this.progress = false
+                    this.$store.commit('auth/timeout', false)
                     this.$router.push(this.$store.getters['auth/loginintent'])
                 })
                 .catch(errorMessage => {

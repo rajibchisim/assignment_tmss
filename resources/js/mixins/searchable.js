@@ -3,8 +3,7 @@ export default {
         return {
             search: {
                 action: '',
-                department_id: '',
-                batch_id: '',
+                scopes: {},
                 terms: '',
                 debounce: null,
                 progress: false,
@@ -14,6 +13,18 @@ export default {
         }
     },
     methods: {
+        /**
+         *
+         * @param  { { scopekey: scopevalue... } } scopes
+         */
+        searchAddScopes(scopes) {
+            Object.keys(scopes).forEach(key => {
+                this.$set(this.search.scopes, key, scopes[key])
+            })
+        },
+        searchClearScopes() {
+            this.search.scopes.splice()
+        },
         searchShowToggle(visible=true) {
             this.search.show = visible
         },
@@ -25,7 +36,12 @@ export default {
         },
         searchRows(terms) {
             this.search.progress = true
-            this.$store.dispatch(this.search.action, { terms, department_id: this.search.department_id, batch_id: this.search.batch_id })
+            this.$store.dispatch(this.search.action, {
+                query: {
+                    terms,
+                    ...this.search.scopes
+                }
+            })
             .then((res)=>{
                 this.search.progress = false
                 this.search.result = res.data

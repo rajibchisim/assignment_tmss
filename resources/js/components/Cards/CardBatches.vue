@@ -70,7 +70,7 @@ export default {
             immediate: true,
             handler(val) {
                 console.log('card batch department id:', this.departmentId)
-                this.search.department_id = this.departmentId.id
+                this.searchAddScopes({ department_id: this.departmentId.id})
             }
         },
     },

@@ -17,7 +17,7 @@ export default {
             }
         }, */
 
-        search: ({}, queryObject) => modelSearch(baseUrl, queryObject),
+        search: ({}, data) => modelSearch(data, baseUrl),
 
         get: ({}, data) => modelGet({}, data, baseUrl, 'result'),
 

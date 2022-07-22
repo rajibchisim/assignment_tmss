@@ -93,9 +93,12 @@ const modelDelete = (data={id: ''}, baseUrl, responsKey) => {
 }
 
 
-const modelSearch = (baseUrl, queryObject) => {
+const modelSearch = (
+    data = { query: {} },
+    baseUrl
+) => {
     return new Promise(async (resolve, reject) => {
-        const queryString = makeQueryString(queryObject)
+        const queryString = makeQueryString(data.query)
         const response = await axios.get(`${baseUrl}/search?${queryString}`)
         if(response.data.status == 200) {
             resolve(response.data.result)

@@ -59,9 +59,14 @@ export default {
         }
     },
     watch: {
-        studentId() {
-            if(this.studentId) {
-                this.search.student_id = this.studentId
+        studentId: {
+            immediate: true,
+            handler() {
+                if(this.studentId) {
+                    this.searchAddScopes({
+                        student_id: this.studentId,
+                    })
+                }
             }
         }
     },

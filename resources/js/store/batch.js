@@ -15,7 +15,7 @@ export default {
 
         //     checkAuthResponse(response) ? reject('') : reject(response.data.errors)
         // },
-        search: ({}, queryObject) => modelSearch(baseUrl, queryObject),
+        search: ({}, data) => modelSearch(data, baseUrl),
         get: ({}, data) => modelGet({}, data, baseUrl, responseKey),
         create: ({}, payload) => modelCreate(payload, baseUrl, responseKey),
         check({}, params) {
