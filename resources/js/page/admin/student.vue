@@ -114,10 +114,16 @@ export default {
             immediate:true,
             handler() {
                 if(!this.student) return
-                    this.setupStudentAddEdit({
-                        department: this.student.department,
-                        batch: this.student.batch,
-                    })
+
+                this.setupStudentAddEdit({
+                    department: this.student.department,
+                    batch: this.student.batch,
+                })
+
+                this.setupResultAddEdit({
+                    student: { id: this.student.id }
+                })
+
             }
         }
     },
