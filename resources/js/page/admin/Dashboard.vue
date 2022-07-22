@@ -1,72 +1,75 @@
 <template>
-  <div class="mt-10">
+<div class="mt-10">
     <div class="flex flex-wrap">
-      <div class="w-full px-4 mb-12 xl:w-8/12 xl:mb-0">
-        <div class="relative flex flex-col w-full min-w-0 mb-6 break-words bg-white border rounded" style="min-height: 80vh;">
-            <div v-if="department" class="p-6">
-                <div class="px-4 mb-4">
-                    <span class="text-sm">Department quick view</span>
-                    <span>{{ department.id + ' | ' +department.name }}</span>
+        <div class="w-full px-4 mb-12 xl:w-8/12 xl:mb-0">
+            <div class="relative flex flex-col w-full min-w-0 mb-6 break-words bg-white border rounded" style="min-height: 80vh;">
+                <div v-if="department" class="p-6">
+                    <div class="px-4 mb-4">
+                        <span class="text-sm">Department quick view</span>
+                        <span>{{ department.id + ' | ' +department.name }}</span>
+                    </div>
+                    <div class="px-4">
+                        <button class="inline-flex items-center text-gray-600 hover:text-gray-700" @click="openBatchAddEditModal(null)">
+                            <span>Create Batch</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                            </svg>
+                        </button>
+                    </div>
+                    <CardBatches
+                        v-if="department && department.batches"
+                        :departmentId="department"
+                        :initRows="department.batches.data"
+                        @edit="openBatchAddEditModal"
+                    />
+
+
+                    <div class="flex-1 flex-grow w-full max-w-full px-4 my-4 text-right text-gray-500">
+                        <button class="px-2 py-1 mb-1 mr-1 text-xs font-bold uppercase transition-all duration-150 ease-linear rounded outline-none focus:outline-none hover:bg-gray-100" type="button"
+                            @click="loadMoreDepartments($event)"
+                            v-if="department.batches && department.batches.prev_page_url"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </button>
+                        <button class="px-2 py-1 mb-1 mr-1 text-xs font-bold uppercase transition-all duration-150 ease-linear rounded outline-none focus:outline-none hover:bg-gray-100" type="button"
+                            @click="loadMoreDepartments($event, 1)"
+                            v-if="department.batches && department.batches.next_page_url"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
-                <div class="px-4">
-                    <button class="inline-flex items-center text-gray-600 hover:text-gray-700" @click="openBatchAddEditModal(null)">
-                        <span>Create Batch</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                        </svg>
-                    </button>
+                <div v-else class="absolute inset-0 flex items-center justify-center">
+                    <p>Select Department from list.</p>
                 </div>
-                <CardBatches v-if="department && department.batches" :departmentId="department" :initRows="department.batches.data" @edit="openBatchAddEditModal"/>
-
-
-                <div
-                    class="flex-1 flex-grow w-full max-w-full px-4 my-4 text-right text-gray-500"
-                >
-                    <button class="px-2 py-1 mb-1 mr-1 text-xs font-bold uppercase transition-all duration-150 ease-linear rounded outline-none focus:outline-none hover:bg-gray-100" type="button"
-                        @click="loadMoreDepartments($event)"
-                        v-if="department.batches && department.batches.prev_page_url"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-                        </svg>
-                    </button>
-                    <button class="px-2 py-1 mb-1 mr-1 text-xs font-bold uppercase transition-all duration-150 ease-linear rounded outline-none focus:outline-none hover:bg-gray-100" type="button"
-                        @click="loadMoreDepartments($event, 1)"
-                        v-if="department.batches && department.batches.next_page_url"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-                        </svg>
-                    </button>
-                </div>
-
-
-
-            </div>
-            <div v-else class="absolute inset-0 flex items-center justify-center">
-                <p>Select Department from list.</p>
             </div>
         </div>
-      </div>
-      <div class="w-full px-4 xl:w-4/12">
-        <div class="px-4 py-2">
-            <button class="inline-flex items-center text-gray-600 hover:text-gray-700" @click="openDepartmentAddEditModal">
-                <span>Create Department</span>
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-            </button>
+        <div class="w-full px-4 xl:w-4/12">
+            <div class="px-4 py-2">
+                <button class="inline-flex items-center text-gray-600 hover:text-gray-700" @click="openDepartmentAddEditModal">
+                    <span>Create Department</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                </button>
+            </div>
+            <CardDepartments
+                ref="cDepartment"
+                @open="openDepartment"
+            />
         </div>
-        <CardDepartments ref="cDepartment" @open="openDepartment"/>
-      </div>
     </div>
     <div class="flex flex-wrap mt-4">
-      <div class="w-full px-4 mb-12 xl:w-8/12 xl:mb-0">
+        <div class="w-full px-4 mb-12 xl:w-8/12 xl:mb-0">
         <!-- <card-page-visits /> -->
-      </div>
-      <div class="w-full px-4 xl:w-4/12">
+        </div>
+        <div class="w-full px-4 xl:w-4/12">
         <!-- <card-social-traffic /> -->
-      </div>
+        </div>
     </div>
 
     <batch-add-edit-modal
@@ -74,14 +77,14 @@
         v-if="batchAddEditModalData.show"
         @close="closeBatchAddEditModal"
         @saveSync="syncBatch"
-     />
+        />
     <DepartmentAddEdit
         :modalData="departmentAddEditModalData"
         v-if="departmentAddEditModalData.show"
         @close="closedepartmentAddEditModal"
         @saveSync="syncDepartment"
     />
-  </div>
+</div>
 </template>
 <script>
 import CardDepartments from "@/components/Cards/CardDepartments.vue";

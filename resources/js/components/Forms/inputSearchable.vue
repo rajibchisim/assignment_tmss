@@ -1,41 +1,40 @@
 <template>
-    <div class="mt-4" @click.stop="">
-        <!-- <label class="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-200">{{ modalData.labels.input }}</label> -->
-        <div class="relative text-sm">
-            <input
-                v-if="batch == null"
-                @input="searchInputHandler"
-                @focus="searchShowToggle"
-                v-model="search.terms"
-                class="block w-full px-4 py-1 text-gray-600 bg-white border rounded-md focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300"
-                type="text"
-            />
-            <input
-                v-if="batch"
-                @input="searchInputHandler"
-                @focus="searchShowToggle"
-                :value="batch ? `${batch.id} | ${batch.name}` : ''"
-                disabled
-                class="block w-full px-4 py-1 text-gray-600 bg-white border rounded-md focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300"
-                type="text"
-            />
-            <button class="absolute text-gray-400 -translate-y-1/2 top-1/2 hover:text-red-400 right-2" v-if="clearButtonVisibility" @click.stop="clearBatch">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-            </button>
-            <div class="absolute z-10 w-full">
-                <div class="w-full p-4 text-sm bg-white border top-8"
-                    @click.self="searchShowToggle(false)"
-                    v-if="batch == null && search.result.length && search.show"
-                >
-                    <div v-for="result in search.result" :key="result.id">
-                        <button @click.stop="selectBatch($event, result)" class="w-full px-4 py-1 hover:bg-gray-100">{{ result.id + ' | ' + result.name }}</button>
-                    </div>
+<div class="mt-4" @click.stop="">
+    <div class="relative text-sm">
+        <input
+            v-if="batch == null"
+            @input="searchInputHandler"
+            @focus="searchShowToggle"
+            v-model="search.terms"
+            class="block w-full px-4 py-1 text-gray-600 bg-white border rounded-md focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300"
+            type="text"
+        />
+        <input
+            v-if="batch"
+            @input="searchInputHandler"
+            @focus="searchShowToggle"
+            :value="batch ? `${batch.id} | ${batch.name}` : ''"
+            disabled
+            class="block w-full px-4 py-1 text-gray-600 bg-white border rounded-md focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300"
+            type="text"
+        />
+        <button class="absolute text-gray-400 -translate-y-1/2 top-1/2 hover:text-red-400 right-2" v-if="clearButtonVisibility" @click.stop="clearBatch">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+        </button>
+        <div class="absolute z-10 w-full">
+            <div class="w-full p-4 text-sm bg-white border top-8"
+                @click.self="searchShowToggle(false)"
+                v-if="batch == null && search.result.length && search.show"
+            >
+                <div v-for="result in search.result" :key="result.id">
+                    <button @click.stop="selectBatch($event, result)" class="w-full px-4 py-1 hover:bg-gray-100">{{ result.id + ' | ' + result.name }}</button>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </template>
 
 <script>

@@ -71,8 +71,6 @@ Vue.use(VueToast, {
 
 window.Vue = require('vue').default;
 
-Vue.component('FormLogin', require('./components/FormLogin.vue').default)
-
 window.addEventListener('load', () => {
     const app = new Vue({
         el: '#app',

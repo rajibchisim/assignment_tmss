@@ -10,18 +10,18 @@
             <!-- DELETE PROMPT -->
 
             <button-close v-on="$listeners"/>
-            <h2 class="text-2xl font-semibold text-center text-gray-700 dark:text-white">{{ modalData.labels.heading }}</h2>
+            <h2 class="text-2xl font-semibold text-center text-gray-700">{{ modalData.labels.heading }}</h2>
 
             <div class="w-full px-6 py-8 md:px-8">
                 <div class="flex items-center justify-between mt-4">
-                    <span class="w-1/5 border-b dark:border-gray-600 lg:w-1/4"></span>
-                    <p class="text-xs text-center text-gray-500 uppercase dark:text-gray-400">{{ modalData.labels.subheading }}</p>
-                    <span class="w-1/5 border-b dark:border-gray-400 lg:w-1/4"></span>
+                    <span class="w-1/5 border-b lg:w-1/4"></span>
+                    <p class="text-xs text-center text-gray-500 uppercase">{{ modalData.labels.subheading }}</p>
+                    <span class="w-1/5 border-b lg:w-1/4"></span>
                 </div>
                 <form @submit.prevent="validateForm" class="mt-6">
                     <fieldset :disabled="progress ? true : false">
                         <div class="relative mt-4 text-base text-gray-600">
-                            <label class="block mb-1 font-medium dark:text-gray-200">Department</label>
+                            <label class="block mb-1 font-medium">Department</label>
                             <input-searchable
                                 :disableEdit="disableDepartment"
                                 :initValue="initDepartment"
@@ -34,7 +34,7 @@
                         </div>
 
                         <div class="relative mt-4 text-base text-gray-600">
-                            <label class="block mb-1 font-medium dark:text-gray-200">Batch</label>
+                            <label class="block mb-1 font-medium">Batch</label>
                             <input-searchable
                                 :disableEdit="disableBatch"
                                 :initValue="initBatch"
@@ -48,7 +48,7 @@
                         </div>
 
                         <div class="relative mt-4">
-                            <label class="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-200" for="name">Student full name</label>
+                            <label class="block mb-1 text-sm font-medium text-gray-600" for="name">Student full name</label>
                             <input id="name" name="name"  v-model="formData.name" class="block w-full px-4 py-1 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300" type="text">
                             <span class="absolute right-0 text-xs text-red-500 -bottom-4">{{ errors.first('name') }}</span>
                         </div>

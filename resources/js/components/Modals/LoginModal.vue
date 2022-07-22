@@ -17,14 +17,14 @@
                 <form @submit.prevent="login" class="mt-10">
                     <div class="mt-4">
                         <label class="block mb-2 text-sm font-medium text-gray-600" for="LoggingEmailAddress">Email Address</label>
-                        <input name="email" id="LoggingEmailAddress" class="block w-full px-4 py-2 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring focus:ring-blue-300" type="email"
+                        <input name="email" id="LoggingEmailAddress" class="block w-full px-4 py-2 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300" type="email"
                         v-model="formData.email" @input="clearErrorMessage">
                     </div>
                     <div class="mt-4">
                         <div class="flex justify-between">
-                            <label class="block mb-2 text-sm font-medium text-gray-600 dark:text-gray-200" for="loggingPassword">Password</label>
+                            <label class="block mb-2 text-sm font-medium text-gray-600" for="loggingPassword">Password</label>
                         </div>
-                        <input id="loggingPassword" name="password" class="block w-full px-4 py-2 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring focus:ring-blue-300" type="password"
+                        <input id="loggingPassword" name="password" class="block w-full px-4 py-2 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300" type="password"
                         v-model="formData.password" @input="clearErrorMessage">
                     </div>
                     <div class="flex items-center justify-center h-4 mt-2">
@@ -46,11 +46,11 @@
                 </form>
 
                 <div class="flex items-center justify-between mt-8">
-                    <span class="w-1/5 border-b dark:border-gray-600 md:w-1/4"></span>
+                    <span class="w-1/5 border-b md:w-1/4"></span>
 
-                    <router-link :to="{ name: 'register' }" class="text-xs text-gray-500 uppercase dark:text-gray-400 hover:underline">or sign up</router-link>
+                    <router-link :to="{ name: 'register' }" class="text-xs text-gray-500 uppercase hover:underline">or sign up</router-link>
 
-                    <span class="w-1/5 border-b dark:border-gray-600 md:w-1/4"></span>
+                    <span class="w-1/5 border-b md:w-1/4"></span>
                 </div>
             </div>
         </div>

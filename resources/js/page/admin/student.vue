@@ -1,74 +1,74 @@
 <template>
 
-    <div>
-        <div class="relative">
-            <card-student-profile :profileData="studentProfile"/>
+<div>
+    <div class="relative">
+        <card-student-profile :profileData="studentProfile"/>
 
-            <link-back-arrow-url :route="{ name: 'batch', params: { id: student ? student.batch.id : '' } }" />
+        <link-back-arrow-url :route="{ name: 'batch', params: { id: student ? student.batch.id : '' } }" />
 
-            <button-edit-pen @click="openStudentAddEditModal(student)" />
+        <button-edit-pen @click="openStudentAddEditModal(student)" />
 
-        </div>
-        <div class="mt-8 text-center">
-            <div class="px-4 mb-2 text-left">
-                <button class="inline-flex items-center text-gray-600 hover:text-gray-700" @click="openResultAddEditModal">
-                    <span>Create Result</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                    </svg>
-                </button>
-            </div>
-            <card-student-results
-            v-if="student"
-            :initRows="student.results"
-            :studentId="student.id"
-            @sort="sortOptionsToggle"
-            @dateRange="dateFilerSeleted"
-            @toggleRangeFilter="toggleRangeFilter"
-            @edit="openResultAddEditModal(null, $event)"/>
-        </div>
-        <div class="mt-6 text-center">
-            <button class="font-normal text-gray-600 hover:text-gray-800"
-            v-if="student && student.results && student.results.next_page_url"
-            @click.prevent="loadmore(
-                student.results,
-                {
-                    name: 'student/get',
-                    params: {
-                        id: student.id
-                    },
-                    query: {
-                        results: true,
-                        ...sortOptionsToKeyStingValue(sortOptions['result'])
-                    }
-                },
-                'results'
-            )"
-            >
-              Load more
+    </div>
+    <div class="mt-8 text-center">
+        <div class="px-4 mb-2 text-left">
+            <button class="inline-flex items-center text-gray-600 hover:text-gray-700" @click="openResultAddEditModal">
+                <span>Create Result</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
             </button>
         </div>
-
-        <student-add-edit
-            :modalData="studentAddEditModalData"
-            :transfer="true"
-            v-if="studentAddEditModalData.show"
-            @close="closeStudentAddEditModal"
-            @saveSync="syncStudent"
-            :disableDepartment="false"
-            :disableBatch="false"
-            :enableDelete="true"
-            @deleteSync="syncStudentDelete"
-        />
-        <ResultAddEdit
-            :modalData="resultAddEditModalData"
-            v-if="resultAddEditModalData.show"
-            @close="closeResultAddEditModal"
-            @saveSync="syncResult"
-            :enableDelete="true"
-            @deleteSync="syncResultDelete"
-        />
+        <card-student-results
+        v-if="student"
+        :initRows="student.results"
+        :studentId="student.id"
+        @sort="sortOptionsToggle"
+        @dateRange="dateFilerSeleted"
+        @toggleRangeFilter="toggleRangeFilter"
+        @edit="openResultAddEditModal(null, $event)"/>
     </div>
+    <div class="mt-6 text-center">
+        <button class="font-normal text-gray-600 hover:text-gray-800"
+        v-if="student && student.results && student.results.next_page_url"
+        @click.prevent="loadmore(
+            student.results,
+            {
+                name: 'student/get',
+                params: {
+                    id: student.id
+                },
+                query: {
+                    results: true,
+                    ...sortOptionsToKeyStingValue(sortOptions['result'])
+                }
+            },
+            'results'
+        )"
+        >
+            Load more
+        </button>
+    </div>
+
+    <student-add-edit
+        :modalData="studentAddEditModalData"
+        :transfer="true"
+        v-if="studentAddEditModalData.show"
+        @close="closeStudentAddEditModal"
+        @saveSync="syncStudent"
+        :disableDepartment="false"
+        :disableBatch="false"
+        :enableDelete="true"
+        @deleteSync="syncStudentDelete"
+    />
+    <ResultAddEdit
+        :modalData="resultAddEditModalData"
+        v-if="resultAddEditModalData.show"
+        @close="closeResultAddEditModal"
+        @saveSync="syncResult"
+        :enableDelete="true"
+        @deleteSync="syncResultDelete"
+    />
+</div>
 </template>
 
 <script>

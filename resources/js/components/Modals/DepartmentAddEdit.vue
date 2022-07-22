@@ -14,15 +14,15 @@
 
             <div class="w-full px-6 py-8 md:px-8">
                 <div class="flex items-center justify-between mt-4">
-                    <span class="w-1/5 border-b dark:border-gray-600 lg:w-1/4"></span>
-                    <p class="text-xs text-center text-gray-500 uppercase dark:text-gray-400">{{ modalData.labels.subheading }}</p>
-                    <span class="w-1/5 border-b dark:border-gray-400 lg:w-1/4"></span>
+                    <span class="w-1/5 border-b lg:w-1/4"></span>
+                    <p class="text-xs text-center text-gray-500 uppercase">{{ modalData.labels.subheading }}</p>
+                    <span class="w-1/5 border-b lg:w-1/4"></span>
                 </div>
                 <form @submit.prevent="validateForm" class="mt-6">
                     <fieldset :disabled="progress ? true : false">
                         <div class="relative mt-4">
-                            <label class="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-200" for="name">{{ modalData.labels.input }}</label>
-                            <input id="name" name="name"  v-model="formData.name" class="block w-full px-4 py-1 text-gray-700 bg-white border rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring focus:ring-blue-300" type="text">
+                            <label class="block mb-1 text-sm font-medium text-gray-600" for="name">{{ modalData.labels.input }}</label>
+                            <input id="name" name="name"  v-model="formData.name" class="block w-full px-4 py-1 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300" type="text">
                             <span class="absolute right-0 text-xs text-red-500 -bottom-4">{{ errors.first('name') }}</span>
                         </div>
                         <!-- v-validate="'required'" -->

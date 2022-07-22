@@ -3,7 +3,15 @@
     <nav class="absolute top-0 left-0 z-10 flex items-center w-full p-4 bg-transparent shadow-lg md:flex-row md:flex-nowrap md:justify-start">
         <div class="container flex flex-wrap items-center justify-between w-full px-4 mx-auto mx-autp md:flex-nowrap md:px-10">
             <div>
-                <router-link :to="{ name: 'home' }">Dashboard</router-link>
+
+                <router-link class="inline-flex items-center text-gray-600 gap-x-2 hover:text-gray-700"
+                    :to="{ name: 'home' }"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                    </svg>
+                    <span>Dashboard</span>
+                </router-link>
             </div>
             <div class="flex items-center gap-x-6">
                 <p class="text-sm font-semibold text-gray-700 lg:inline-block">

@@ -1,14 +1,12 @@
 <template>
-  <div
-    class="relative flex flex-col w-full min-w-0 mb-6 break-words bg-white rounded shadow-lg"
-  >
+<div class="relative flex flex-col w-full min-w-0 mb-6 break-words bg-white rounded shadow-lg">
     <div class="px-4 py-3 mb-0 border-0 rounded-t">
-      <div class="flex flex-wrap items-center">
-        <div class="relative flex-1 flex-grow w-full max-w-full px-4">
-          <h3 class="text-base font-semibold text-left text-gray-700">
-            Batches
-          </h3>
-        </div>
+        <div class="flex flex-wrap items-center">
+            <div class="relative flex-1 flex-grow w-full max-w-full px-4">
+                <h3 class="text-base font-semibold text-left text-gray-700">
+                Batches
+                </h3>
+            </div>
         <div class="relative">
             <input placeholder="Search"
                 @input="searchInputHandler"
@@ -30,7 +28,7 @@
             </button>
         </div>
 
-      </div>
+        </div>
     </div>
     <div class="relative">
         <div>
@@ -40,11 +38,15 @@
             @click.self="searchShowToggle(false)"
             v-if="search.terms != '' && search.result.length && search.show"
         >
-            <table-batches :rows="search.result" @edit="clearSearchAndForwardEditEvent($event)" class="bg-white"/>
+            <table-batches
+                class="bg-white"
+                :rows="search.result"
+                @edit="clearSearchAndForwardEditEvent($event)"
+            />
         </div>
     </div>
 
-  </div>
+</div>
 </template>
 
 <script>

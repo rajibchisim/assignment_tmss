@@ -5,7 +5,6 @@ import store from './store'
 
 import LoginPage from './page/login.vue'
 import RegisterPage from '@/page/register.vue'
-import HomePage from '@/page/home.vue'
 import DashboardPage from '@/page/admin/Dashboard.vue'
 import AdminLayout from '@/layout/Admin.vue'
 import DepartmentPage from '@/page/admin/department.vue'
