@@ -6,7 +6,7 @@
             <tr class="text-xs font-semibold text-left uppercase">
                 <th class="w-20 px-6 py-3 border border-l-0 border-r-0 border-solid whitespace-nowrap">ID</th>
                 <th class="px-6 border border-l-0 border-r-0 border-solid whitespace-nowrap">
-                    <button class="inline-flex px-4 py-3 gap-x-2 hover:bg-gray-100" @click="$emit('sort', { result: 'gpa' })">
+                    <button class="inline-flex px-4 py-3 gap-x-2 hover:bg-gray-100" @click="$emit('sort', { group: 'result', column: 'gpa' })">
                         <span>
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
@@ -17,7 +17,7 @@
                 </th>
                 <th class="px-6 border border-l-0 border-r-0 border-solid whitespace-nowrap" >
                     <p class="flex justify-between">
-                        <button class="inline-flex px-4 py-3 gap-x-2 hover:bg-gray-100" @click="$emit('sort', { result: 'date' })">
+                        <button class="inline-flex px-4 py-3 gap-x-2 hover:bg-gray-100" @click="$emit('sort', { group: 'result', column: 'date' })">
                             <span>
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />

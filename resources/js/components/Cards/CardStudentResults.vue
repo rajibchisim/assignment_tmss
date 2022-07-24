@@ -30,13 +30,21 @@
 
     <div class="relative mt-4">
         <div>
-            <table-results :initRows="initRows.data" v-on="$listeners"/>
+            <table-results
+                :initRows="initRows.data"
+                v-on="$listeners"
+            />
         </div>
         <div class="absolute top-0 w-full h-full pb-8 pl-8 bg-black border bg-opacity-10"
             @click.self="searchShowToggle(false)"
             v-if="search.terms != '' && search.result.length > 0 && search.show"
         >
-            <table-results :initRows="search.result" @edit="clearSearchAndForwardEditEvent($event)" :hideDateFilter="true" class="bg-white"/>
+            <table-results
+                class="bg-white"
+                :initRows="search.result"
+                @edit="clearSearchAndForwardEditEvent($event)"
+                :hideDateFilter="true"
+            />
         </div>
     </div>
 </div>

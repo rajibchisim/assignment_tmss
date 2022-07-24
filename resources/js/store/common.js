@@ -4,7 +4,24 @@ const makeQueryString = (queryObject) => {
     if(!queryObject) return ''
     let queryString = ''
     Object.keys(queryObject).forEach(key => {
-        queryString += `${key}=${queryObject[key]}&&`
+        const queryItem = queryObject[key]
+        if(Array.isArray(queryItem)) {
+            /**
+             * Array contains
+             * {
+             *      column: 'columnName',
+             *      value: 'columnValue'
+             * }
+             *
+             */
+            queryItem.forEach(item => {
+                queryString += `${key}[${item.column}]=${item.value}&&`
+            })
+        } else {
+            queryString += `${key}=${queryObject[key]}&&`
+        }
+
+        return queryString
     })
 
     return queryString
@@ -48,6 +65,7 @@ const modelIndex = (
 
 
 const modelGet = ({}, data={id: '', queryObject: {}}, baseUrl, responsKey) => {
+    console.log('modelGet: ', data.queryObject)
     return new Promise(async (resolve, reject) => {
         const queryString = makeQueryString(data.queryObject)
         const response = await axios.get(`${baseUrl}/${data.id}?${queryString}`)

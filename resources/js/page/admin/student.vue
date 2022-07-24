@@ -22,7 +22,7 @@
         v-if="student"
         :initRows="student.results"
         :studentId="student.id"
-        @sort="sortOptionsToggle"
+        @sort="sortableOptionToggle"
         @dateRange="dateFilerSeleted"
         @toggleRangeFilter="toggleRangeFilter"
         @edit="openResultAddEditModal(null, $event)"/>
@@ -39,7 +39,9 @@
                 },
                 query: {
                     results: true,
-                    ...sortOptionsToKeyStingValue(sortOptions['result'])
+                    dateRange: dateRangeFilter.active,
+                    ...dateRangeFilter.query,
+                    sort: sortableOptionGetGroupQueryArray('result'),
                 }
             },
             'results'
@@ -83,7 +85,7 @@ import StudentAddEditMixin from '@/mixins/studentAddEditModal'
 
 
 import ResultAddEditMixin from '@/mixins/resultAddEdit'
-import LinkBack from '../../components/common/linkBack.vue'
+
 
 export default {
     components: {
@@ -151,7 +153,8 @@ export default {
                     results: true,
                     dateRange: this.dateRangeFilter.active,
                     ...this.dateRangeFilter.query,
-                    ...this.sortOptionsToKeyStingValue(this.sortOptions['result'])
+                    sort: this.sortableOptionGetGroupQueryArray('result'),
+
                 }
             })
             .then(res => {
@@ -208,7 +211,7 @@ export default {
         this.fetchPageMasterData()
 
         // related to sort mixin
-        this.sortOptions.callbacks.push({ group: 'result', cb: this.fetchPageMasterData })
+        this.sortableOptionAddGroupCallback({ group: 'result', cb: this.fetchPageMasterData })
     }
 }
 </script>
