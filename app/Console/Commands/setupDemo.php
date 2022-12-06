@@ -6,6 +6,7 @@ use App\Models\Batch;
 use App\Models\Department;
 use App\Models\Result;
 use App\Models\Student;
+use App\Models\User;
 use Illuminate\Console\Command;
 
 class setupDemo extends Command
@@ -131,6 +132,16 @@ class setupDemo extends Command
         $this->info('');
         $this->info('Database seeding completed');
 
+        $this->newLine(1);
+        $this->warn('Generating admin user ...');
+        $username = 'admin@admin.com';
+        User::factory()->create(['email' => $username, 'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi']);
+
+        $this->table(
+            ['Email', 'Password'],
+            [[$username, 'password']]
+        );
+        $this->info('Setup complete.');
 
         return 0;
     }
